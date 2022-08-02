@@ -204,7 +204,7 @@ bool		  cosdatachanged	  = 0;
 bool		  assymainprocnotbusy = 1;
 unsigned char mainloopassydata[BYTES_OF_SER_DATA + 6];
 unsigned char size_of_mainloopassydata = 0;
-bool		  new_produce_data_avail   = 1;
+bool		  new_produce_data_avail   = 0;
 void		  TriggerCOS (void)
 {
 	new_produce_data_avail = 1;

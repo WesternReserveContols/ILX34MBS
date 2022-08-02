@@ -306,7 +306,7 @@ void InitSerialIO(void)
 	SH_Set_Parameters ();
 	SH_Init ();
 
-	TriggerCOS();
+//	TriggerCOS(); //TODO Jignesh to avoid zero to PLC data
 }
 
 /**
@@ -1205,7 +1205,7 @@ void MB_Rtu_TimedOut(void) //interrupt 1  // using 2
    else { // Slave Mode
       MB_Status = PROCESSING_COMMAND;
    }
-   TriggerCOS();
+//   TriggerCOS();   //TODO Jignesh to avoid zero to PLC data
    ProcessMbMessage=1;  //process the message
 }
 
@@ -1276,7 +1276,7 @@ void Serial_TX_ISR(void)
       //we are done transmiting the message,
       if(!dest_addr) waiting=0;//broadcast message has no response
       else Start_Timeout();
-      TriggerCOS();
+//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
    }
 }
 
@@ -1461,7 +1461,7 @@ void Serial_RX_ISR(void)
                }
                ProcessMbMessage=1;
                //Jignesh RI=0;
-               TriggerCOS();
+//               TriggerCOS();  //TODO Jignesh to avoid zero to PLC data
                return;
             }
             else
@@ -1539,7 +1539,7 @@ void Serial_RX_ISR(void)
         MB_Status = PROCESSING_COMMAND;
      }
      ProcessMbMessage=1;
-     TriggerCOS();
+//     TriggerCOS();  //TODO Jignesh to avoid zero to PLC data
    }
    //Jignesh RI=0;
 }
@@ -1812,7 +1812,7 @@ TESTSKIP:
       else { // MB_SLAVEMODE
          MB_Status = PROCESSING_RESPONSE;
       }
-      TriggerCOS();
+//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
       // reset MB_Exception to 0 every time a message comes in from DN
       MB_Exception = 0;
 
@@ -1833,7 +1833,7 @@ TESTSKIP:
       }
 
       transaction_id = P_InBuf[DNO_TX_ID];
-      TriggerCOS();
+//      TriggerCOS();   //TODO Jignesh to avoid zero to PLC data
    }
    return;
 }
@@ -2742,7 +2742,7 @@ void main_port_serial (void)
       }
       waiting = 0;
       MB_Status = READY_FOR_COMMAND;
-      TriggerCOS();
+//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
    }
 
    if ( ( ModAttrib.Mode == ASCII_MODE ) && ( ASCII_Mode_InterChar_TO_flg ) ) {

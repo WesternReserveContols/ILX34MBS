@@ -159,16 +159,24 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 */
 void Module_ID_Init ()
 {
+
+#ifdef Rick_TEST
+
+	Module_Type type = MODULE_TYPE_ILX34_MBS485;
+	Module_ID_Set_Global_Variables (type);
+#else
 	if (!Module_ID_Initialized ())
 	{
+	Module_Type type = Module_ID_Read_Pins ();
 
-		Module_Type type = Module_ID_Read_Pins ();
-		Module_ID_Write_Flash (type);
-		Module_ID_Verify_Flash (type);
+
+	Module_ID_Write_Flash (type);
+	Module_ID_Verify_Flash (type);
 	}
 
 	Module_Type type = Module_ID_Read_Flash ();
 	Module_ID_Set_Global_Variables (type);
+#endif
 }
 
 // 1734 Application Global Variables
@@ -180,38 +188,20 @@ unsigned char major_revision_mem = 1;
 unsigned char minor_revision_mem = 1;
 unsigned int  vendor_id_mem		 = 1;
 
-const unsigned char id_1734_232_name_mem[] = "\x1A"
-											 "1734-232ASC/C 232 ASCII-R";  // Rick 5/4 added -R to indicated Recovered
-const unsigned int	id_1734_232_product_type_mem   = 115;
-const unsigned int	id_1734_232_product_code_mem   = 110;
-const unsigned char id_1734_232_major_revision_mem = 4;
-const unsigned char id_1734_232_minor_revision_mem = 4;
-const unsigned int	id_1734_232_vendor_id_mem	   = 1;
 
-const unsigned char id_1734_485_name_mem[] = "\x1A"
-											 "1734-485ASC/C 485 ASCII-R"; // Rick 5/4 added -R to indicated Recovered
-const unsigned int	id_1734_485_product_type_mem   = 115;
-const unsigned int	id_1734_485_product_code_mem   = 133;
-const unsigned char id_1734_485_major_revision_mem = 4;
-const unsigned char id_1734_485_minor_revision_mem = 4;
-const unsigned int	id_1734_485_vendor_id_mem	   = 1;
+const unsigned char id_ILX_232_name_mem[] = "\x0C""ILX34-MBS232";
+const unsigned int	id_ILX_232_product_type_mem   = 12;
+const unsigned int	id_ILX_232_product_code_mem   = 4001;
+const unsigned char id_ILX_232_major_revision_mem = 1;
+const unsigned char id_ILX_232_minor_revision_mem = 15;
+const unsigned int	id_ILX_232_vendor_id_mem	   = 309;
 
-const unsigned char id_1738_232_name_mem[] = "\x1B"
-											 "1738-232ASCM12 232 ASCII-R"; // Rick 5/4 added -R to indicated Recovered
-const unsigned int	id_1738_232_product_type_mem   = 115;
-const unsigned int	id_1738_232_product_code_mem   = 129;
-const unsigned char id_1738_232_major_revision_mem = 4;
-const unsigned char id_1738_232_minor_revision_mem = 4;
-const unsigned int	id_1738_232_vendor_id_mem	   = 1;
-
-const unsigned char id_1738_485_name_mem[] = "\x1B"
-											 "1738-485ASCM12 485 ASCII-R";  // Rick 5/4 added -R to indicated Recovered
-const unsigned int	id_1738_485_product_type_mem   = 115;
-const unsigned int	id_1738_485_product_code_mem   = 159;
-const unsigned char id_1738_485_major_revision_mem = 4;
-const unsigned char id_1738_485_minor_revision_mem = 4;
-const unsigned int	id_1738_485_vendor_id_mem	   = 1;
-
+const unsigned char id_ILX_485_name_mem[] = "\x0C""ILX34-MBS485";
+const unsigned int	id_ILX_485_product_type_mem   = 12;
+const unsigned int	id_ILX_485_product_code_mem   = 4002;
+const unsigned char id_ILX_485_major_revision_mem = 1;
+const unsigned char id_ILX_485_minor_revision_mem = 15;
+const unsigned int	id_ILX_485_vendor_id_mem	   = 309;
 /*
 	Sets 1734 applications module ID variables
 */
@@ -228,37 +218,21 @@ static void Module_ID_Set_Global_Variables (Module_Type type)
 
 	switch (type)
 	{
-	case MODULE_TYPE_1734_232:
-		p_name_mem			 = id_1734_232_name_mem;
-		p_product_type_mem	 = &id_1734_232_product_type_mem;
-		p_product_code_mem	 = &id_1734_232_product_code_mem;
-		p_major_revision_mem = &id_1734_232_major_revision_mem;
-		p_minor_revision_mem = &id_1734_232_minor_revision_mem;
-		p_vendor_id_mem		 = &id_1734_232_vendor_id_mem;
+	case MODULE_TYPE_ILX34_MBS232:
+		p_name_mem			 = id_ILX_232_name_mem;
+		p_product_type_mem	 = &id_ILX_232_product_type_mem;
+		p_product_code_mem	 = &id_ILX_232_product_code_mem;
+		p_major_revision_mem = &id_ILX_232_major_revision_mem;
+		p_minor_revision_mem = &id_ILX_232_minor_revision_mem;
+		p_vendor_id_mem		 = &id_ILX_232_vendor_id_mem;
 		break;
-	case MODULE_TYPE_1734_485:
-		p_name_mem			 = id_1734_485_name_mem;
-		p_product_type_mem	 = &id_1734_485_product_type_mem;
-		p_product_code_mem	 = &id_1734_485_product_code_mem;
-		p_major_revision_mem = &id_1734_485_major_revision_mem;
-		p_minor_revision_mem = &id_1734_485_minor_revision_mem;
-		p_vendor_id_mem		 = &id_1734_485_vendor_id_mem;
-		break;
-	case MODULE_TYPE_1738_232:
-		p_name_mem			 = id_1738_232_name_mem;
-		p_product_type_mem	 = &id_1738_232_product_type_mem;
-		p_product_code_mem	 = &id_1738_232_product_code_mem;
-		p_major_revision_mem = &id_1738_232_major_revision_mem;
-		p_minor_revision_mem = &id_1738_232_minor_revision_mem;
-		p_vendor_id_mem		 = &id_1738_232_vendor_id_mem;
-		break;
-	case MODULE_TYPE_1738_485:
-		p_name_mem			 = id_1738_485_name_mem;
-		p_product_type_mem	 = &id_1738_485_product_type_mem;
-		p_product_code_mem	 = &id_1738_485_product_code_mem;
-		p_major_revision_mem = &id_1738_485_major_revision_mem;
-		p_minor_revision_mem = &id_1738_485_minor_revision_mem;
-		p_vendor_id_mem		 = &id_1738_485_vendor_id_mem;
+	case MODULE_TYPE_ILX34_MBS485:
+		p_name_mem			 = id_ILX_485_name_mem;
+		p_product_type_mem	 = &id_ILX_485_product_type_mem;
+		p_product_code_mem	 = &id_ILX_485_product_code_mem;
+		p_major_revision_mem = &id_ILX_485_major_revision_mem;
+		p_minor_revision_mem = &id_ILX_485_minor_revision_mem;
+		p_vendor_id_mem		 = &id_ILX_485_vendor_id_mem;
 		break;
 	default:
 		break;
