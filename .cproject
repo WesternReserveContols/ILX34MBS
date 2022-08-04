@@ -393,6 +393,7 @@
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="ILX-Debug"/>
+		<configuration configurationName="ASC Vault"/>
 		<configuration configurationName="ASC-Debug"/>
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/ASC-ILX Scratch"/>
