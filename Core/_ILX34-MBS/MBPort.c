@@ -151,7 +151,8 @@ int Transmitting=0;
 int ProcessMbMessage=0;
 MB_CONFIG	ModbusConfig;
 unsigned char parityChkRslt;
-unsigned int BaudDiv[8] = { BAUD19, BAUD12, BAUD24, BAUD48, BAUD96, BAUD38 };
+unsigned int BaudDiv[8] = { BAUD19, BAUD12, BAUD24, BAUD48, BAUD96, BAUD38 };  // Rick_TEEST 8/3/2022
+//unsigned int BaudDiv[8] = { BAUD96, BAUD12, BAUD24, BAUD48, BAUD19, BAUD38 };
 
 BYTE recieve_status;//=0;
 BYTE transmit_record_counter;//=0;
@@ -274,7 +275,8 @@ void InitSerialIO(void)
    mb_messagesent = 0;
    Ascii.DataBits = MBport_DataParity[Ascii.Framing].DataBits;
    Ascii.Parity = MBport_DataParity[Ascii.Framing].Parity;
-   IO_SET_SerialTxRx (TxRx_RECV);
+   IO_SET_SerialTxRx (TxRx_RECV);    //Rick_TEST 8/3/2022
+   // TxRx = TxRx_RECV;
    mb_data_buffer_len=0;			     //er-- experiment
 
    // Calculate the MaxRxBufSize
@@ -1251,7 +1253,8 @@ void Serial_TX_ISR(void)
    if(mb_data_buffer_out_len)
    {
       mb_data_buffer_out_len--;
-      IO_SET_SerialTxRx (TxRx_XMIT); //set 485 chip to transmit
+      IO_SET_SerialTxRx (TxRx_XMIT); //set 485 chip to transmit Rick_TEST
+      //  TxRx = TxRx_RECV;
 
       XmitChar(*(mb_data_ptr++));
 
@@ -1272,7 +1275,8 @@ void Serial_TX_ISR(void)
          waiting=0;  // tell the system we are not waiting for a response anymore.
          MB_Status = READY_FOR_COMMAND;
       }
-      IO_SET_SerialTxRx (TxRx_RECV); //set 485 chip to receive
+      IO_SET_SerialTxRx (TxRx_RECV); //set 485 chip to receive Rick_TEST 8/3/2022
+      // TxRx = TxRx_RECV;
       //we are done transmiting the message,
       if(!dest_addr) waiting=0;//broadcast message has no response
       else Start_Timeout();
@@ -1702,7 +1706,8 @@ void StartMbSend(void)
       mb_data_ptr=mb_data_buffer_out;
       mb_data_buffer_out_len--;
       Transmitting=1;
-      IO_SET_SerialTxRx (TxRx_XMIT); //set 485 chip to transmit
+      IO_SET_SerialTxRx (TxRx_XMIT); //set 485 chip to transmit  Rick_TEST 8/3/2022
+      // TxRx = TxRx_XMIT;
       XmitChar(*(mb_data_ptr++));
    }
    else Transmitting=0;

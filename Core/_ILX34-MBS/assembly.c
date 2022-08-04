@@ -658,7 +658,8 @@ void SetProduceAssyNum(MSG * msg)
  */
 unsigned char CompAssyCSize (void)
 {
-	return ComputeIOConsumeSize();
+	return ComputeIOConsumeSize();   // Rick_TEEST 8/3/2022
+	//return TxStrLen + 4;
 }
 
 /**
@@ -671,7 +672,8 @@ unsigned char CompAssyCSize (void)
  */
 unsigned char CompAssyPSize (void)
 {
-	return ComputeIOProduceSize();
+	return ComputeIOProduceSize();   // Rick_TEEST 8/3/2022
+	//return 4 + RRecRxStrMaxLen;
 }
 
 /**
