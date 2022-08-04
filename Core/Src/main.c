@@ -90,7 +90,6 @@ int main (void)
 	(void)c;
 	(void)d;
 	*/
-
 	Module_ID_Init ();
 
 	/*Disabled: deemed unnesesary

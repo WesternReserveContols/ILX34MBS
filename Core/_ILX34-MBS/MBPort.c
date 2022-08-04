@@ -1546,7 +1546,10 @@ void Serial_RX_ISR(void)
 
 /**
  * @brief MBLoad() It will parse and reverse the POLL request from DNET and create the MB PDU for
- * 					MODBUS mode configuration.
+ * 					MODBUS mode configuration in mb_data_buffer_out. This is the message goes out
+ * 					the UART as Modbus message on the wire. mainloopassydata  contains the reply
+ * 					sent to the Producer for PLC Input consumption.
+ *
  *
  * @param unsigned char  *src)  	- Pointer to source buffer
  * @return void 					- None
@@ -2474,10 +2477,10 @@ void MB_SetHoldReg_Count(MSG  * msg)
 
 
 /**
- * @brief MB_SetHoldReg_Count() Functions is used to set the holding register count value in EEPROM struct.
+ * @brief Mb_FactoryDefaults() Function will write the device EEPROM with default data when ever PLC requested it.
  *
  *
- * @param MSG * 					- Pointer to MSG struct data
+ * @param void 						- None
  * @return void 					- None
  *
  */
@@ -2572,7 +2575,7 @@ void Mb_FactoryDefaults(void)
 }
 
 /**
- * @brief InitMbParam() Functions to initialize modbus parameters.
+ * @brief InitMbParam() Functions to initialize modbus parameters by reading stored from EEPROM.
  *
  *
  * @return void 					- None

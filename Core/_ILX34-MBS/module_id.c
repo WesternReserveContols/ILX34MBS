@@ -238,12 +238,12 @@ static void Module_ID_Set_Global_Variables (Module_Type type)
 		break;
 	}
 
-	assert_with_message (p_name_mem, "null module id pointer");
-	assert_with_message (p_product_type_mem, "null module id pointer");
-	assert_with_message (p_product_code_mem, "null module id pointer");
-	assert_with_message (p_major_revision_mem, "null module id pointer");
-	assert_with_message (p_minor_revision_mem, "null module id pointer");
-	assert_with_message (p_vendor_id_mem, "null module id pointer");
+	assert_with_message (p_name_mem != NULL, "null module id pointer");
+	assert_with_message (p_product_type_mem != NULL, "null module id pointer");
+	assert_with_message (p_product_code_mem != NULL, "null module id pointer");
+	assert_with_message (p_major_revision_mem != NULL, "null module id pointer");
+	assert_with_message (p_minor_revision_mem != NULL, "null module id pointer");
+	assert_with_message (p_vendor_id_mem != NULL, "null module id pointer");
 
 	memcpy (name_mem, p_name_mem, sizeof (name_mem));
 	memcpy (&product_type_mem, p_product_type_mem, sizeof (product_type_mem));
