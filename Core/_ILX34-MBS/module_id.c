@@ -65,8 +65,10 @@ bool Module_Type_Permitted (Module_Type type)
 
 void assert_with_message (bool value, const char *message)
 {
+#ifndef Rick_TEST
 	if (!value)
-		Debug_ReportError (DEBUG_ERR_ASSERT, message, DEBUG_STOP);
+   		Debug_ReportError (DEBUG_ERR_ASSERT, message, DEBUG_STOP);
+#endif
 }
 
 void assert_permitted_runtime_module_type (Module_Type type, const char *message)
