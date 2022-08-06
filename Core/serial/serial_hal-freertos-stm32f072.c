@@ -120,8 +120,8 @@ serial_status SH_Set_Parameters (void)
 		// We will need to mask off one stop bit out of the 8 data bits
 		DSC_Writes (DSC_LEVEL_INFO, "7N2\r\n");
 		sh_flag_7N2	   = 1;
-		sh_word_length = UART_WORDLENGTH_7B; //TODO changed from UART_WORDLENGTH_8B; to UART_WORDLENGTH_7B to make it workable
-		sh_stop_bits   = UART_STOPBITS_2; //TODO changed from UART_STOPBITS_1; to UART_STOPBITS_2 to make it workable
+		sh_word_length = UART_WORDLENGTH_8B; //TODO changed from UART_WORDLENGTH_8B; to UART_WORDLENGTH_7B to make it workable
+		sh_stop_bits   = UART_STOPBITS_1; //TODO changed from UART_STOPBITS_1; to UART_STOPBITS_2 to make it workable
 		sh_parity	   = UART_PARITY_NONE;
 		break;
 	case FRAME_7E1:
