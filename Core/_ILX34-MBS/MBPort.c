@@ -1138,9 +1138,10 @@ void StopTimeout(void)
 
 /********************* RTU TIMEOUT SYSTEM ************************/
 BYTE TimerL,TimerH;
-const unsigned int RTU_Timeout[6] = { 29166, 14583, 7292, 3646, 1823, 912 };
+//const unsigned int RTU_Timeout[6] = { 29166, 14583, 7292, 3646, 1823, 912 };
 // 1200>0.029166667, 2400>0.014583333, 4800>0.007291667, 9600>0.003645833, 19200>0.001822917, 38400>0.000911458
-
+//unsigned int BaudDiv[8] = { BAUD19, BAUD12, BAUD24, BAUD48, BAUD96, BAUD38 };
+const unsigned int RTU_Timeout[6] = { 1823, 29166, 14583, 7292, 3646, 912 };
 
 /**
  * @brief InitRtuTimeout() Initialized RTU timer with buad rate based timeout.
@@ -2762,7 +2763,7 @@ void main_port_serial (void)
          if ( ModbusConfig.type == MB_SLAVEMODE ) {
             MB_Status = READY_FOR_COMMAND;
          }
-         TriggerCOS();
+//         TriggerCOS(); //TODO Jignesh to avoid zerto PLC
       }
    }
 
