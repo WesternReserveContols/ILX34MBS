@@ -20,6 +20,10 @@ extern uchar GMMNewMACID;
 
 static void COS_Code (void);
 
+unsigned char SoftReset = 0;    // Rick_TEST Bug9 8/10
+#define STARTUP1()  goto SOFT_RESET;
+
+
 //***********************************************************************
 //
 // Function                  Main()
@@ -49,7 +53,7 @@ static void COS_Code (void);
 //
 //             Copyright (c) 1994 Allen-Bradley Co.
 //***********************************************************************/
-void STARTUP1 (void);
+
 
 void main_serial (void)
 {
@@ -201,6 +205,12 @@ GMM_RESTART:
 
 	for (;;)
 	{
+
+		if(SoftReset == SOFT_RESET_ACTIVE)
+					{
+						SoftReset = 0;
+						STARTUP1();  //Rick_TEST Bug9    goto SOFT_RESET;
+					}
 		// nonblocking write to eeprom for any outstanding RAM values
 		EEPROMObjectWriteRAMtoEE (0);
 
