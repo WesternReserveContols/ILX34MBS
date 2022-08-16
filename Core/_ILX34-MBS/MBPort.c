@@ -259,12 +259,17 @@ void RestoreSerialFromEE (void)
  */
 void InitSerialIO(void)
 {
-   static char init_status = 0;
+
+#ifndef Rick_TEST   // Bug11
+	static char init_status = 0;
 
    if (init_status ==1)
 	   return;
 
    init_status = 1;
+#endif
+
+
    mb_timer = 0;
    mb_data_buffer_out_len = 0;
    error_status = 0;
@@ -273,6 +278,8 @@ void InitSerialIO(void)
    /* set for 1 sec */
    mb_timeoutcounter = ModbusConfig.timeout;
    mb_messagesent = 0;
+
+
    Ascii.DataBits = MBport_DataParity[Ascii.Framing].DataBits;
    Ascii.Parity = MBport_DataParity[Ascii.Framing].Parity;
    IO_SET_SerialTxRx (TxRx_RECV);    //Rick_TEST 8/3/2022
@@ -308,7 +315,7 @@ void InitSerialIO(void)
 	SH_Set_Parameters ();
 	SH_Init ();
 
-//	TriggerCOS(); //TODO Jignesh to avoid zero to PLC data
+	TriggerCOS(); //Bug5  TODO Jignesh to avoid zero to PLC data
 }
 
 /**
@@ -1208,7 +1215,7 @@ void MB_Rtu_TimedOut(void) //interrupt 1  // using 2
    else { // Slave Mode
       MB_Status = PROCESSING_COMMAND;
    }
-//   TriggerCOS();   //TODO Jignesh to avoid zero to PLC data
+   TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
    ProcessMbMessage=1;  //process the message
 }
 
@@ -1281,7 +1288,7 @@ void Serial_TX_ISR(void)
       //we are done transmiting the message,
       if(!dest_addr) waiting=0;//broadcast message has no response
       else Start_Timeout();
-//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
+      TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
    }
 }
 
@@ -1466,7 +1473,7 @@ void Serial_RX_ISR(void)
                }
                ProcessMbMessage=1;
                //Jignesh RI=0;
-//               TriggerCOS();  //TODO Jignesh to avoid zero to PLC data
+               TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
                return;
             }
             else
@@ -1544,7 +1551,7 @@ void Serial_RX_ISR(void)
         MB_Status = PROCESSING_COMMAND;
      }
      ProcessMbMessage=1;
-//     TriggerCOS();  //TODO Jignesh to avoid zero to PLC data
+     TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
    }
    //Jignesh RI=0;
 }
@@ -1775,7 +1782,9 @@ void MBM_QueMbTxMsg(unsigned char  *P_InBuf)
    //  Processing for ILX Command Byte   // ILX-13
    if(P_InBuf[MBM_CMDS] & MBM_CMDS_BOOT)   //Perform Cold Boot
    {
-      //TODO SoftReset = SOFT_RESET_ACTIVE;
+
+	   SoftReset = SOFT_RESET_ACTIVE; // Bug9
+	   //TODO SoftReset = SOFT_RESET_ACTIVE;
    }
    if (P_InBuf[MBM_CMDS] & MBM_CMDS_RSTCTR)
    {
@@ -1821,7 +1830,7 @@ TESTSKIP:
       else { // MB_SLAVEMODE
          MB_Status = PROCESSING_RESPONSE;
       }
-//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
+      TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
       // reset MB_Exception to 0 every time a message comes in from DN
       MB_Exception = 0;
 
@@ -1842,7 +1851,7 @@ TESTSKIP:
       }
 
       transaction_id = P_InBuf[DNO_TX_ID];
-//      TriggerCOS();   //TODO Jignesh to avoid zero to PLC data
+      TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
    }
    return;
 }
@@ -2592,11 +2601,10 @@ void InitMbParam(void)
 {
 	if (Read_EE_Byte(EE_MODBUSMODE_ADDR) != 0x55)
 	{
-	   ModAttrib.Mode = Read_EE_Byte(EE_MODBUSMODE_ADDR);
-//	   ModAttrib.Mode = RTU_MODE; //TODO make it enable to test with RTU. Also to make RTU working make Framing 3 (8N1)
-
-	   Ascii.Framing =  Read_EE_Byte(EE_SERIAL_CHARACTER_FORMAT);
-//	   Ascii.Framing = 3; // TODO hard coded for value 3 means 8N1 for UART framing setting.
+	   //ModAttrib.Mode = RTU_MODE; //TODO make it enable to test with RTU. Also to make RTU working make Framing 3 (8N1)
+	   ModAttrib.Mode = Read_EE_Byte(EE_MODBUSMODE_ADDR); // Bug10
+	   Ascii.Framing =  Read_EE_Byte(EE_SERIAL_CHARACTER_FORMAT);  //Bug10
+	   //Ascii.Framing = 3; // TODO hard coded for value 3 means 8N1 for UART framing setting.
 
 	   Ascii.BaudRate = Read_EE_Byte(EE_SERIAL_BAUDRATE);
 
@@ -2682,6 +2690,9 @@ void InitMbParam(void)
 	 // DRC 2/19/2015 Added to bypass call to AssyConfigFunc that was taken
 	 // out of the InitAssembly() routine.
    // DRC 3/10/2015 took out so MB buadrate change takes effect after reset as v1.13 does InitSerialIO();
+
+
+
 }
 
 /**
@@ -2751,7 +2762,7 @@ void main_port_serial (void)
       }
       waiting = 0;
       MB_Status = READY_FOR_COMMAND;
-//      TriggerCOS(); //TODO Jignesh to avoid zerto PLC
+      TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
    }
 
    if ( ( ModAttrib.Mode == ASCII_MODE ) && ( ASCII_Mode_InterChar_TO_flg ) ) {
@@ -2768,7 +2779,7 @@ void main_port_serial (void)
          if ( ModbusConfig.type == MB_SLAVEMODE ) {
             MB_Status = READY_FOR_COMMAND;
          }
-//         TriggerCOS(); //TODO Jignesh to avoid zerto PLC
+         TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
       }
    }
 
