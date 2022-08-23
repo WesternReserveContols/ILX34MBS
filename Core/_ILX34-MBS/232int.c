@@ -52,6 +52,7 @@
 #include "dn_cnobj.h" // declarations for the connection object
 #include "dn_init.h"
 #include "xdatacpy.h"
+#include "dn_tmobj.h"
 
 #include "gpio.h"
 #include "serial_config.h"
@@ -59,14 +60,10 @@
 // uncomment to allow the connection sizes to be changed.
 //#define NewConnectionAllocationMethod
 
-void TimerObjectSvcTimer (void);
-
 // DEFINES
 
 // LOCAL FUNCTIONS
-void SHWMain (void);
-void RRecMain (void);
-void AssyPFunc (MSG *msg);
+extern void AssyPFunc (MSG *msg);
 #ifdef GMM
 
 #define TX_FIFO_OVERFLOW 0x01
@@ -127,8 +124,8 @@ extern unsigned char C_OutMsgBufferSize;
 //
 //             Copyright (c) 1999 Allen-Bradley Co.
 //**********************************************************************
-unsigned char CompAssyCSize (void);
-unsigned char CompAssyPSize (void);
+extern unsigned char CompAssyCSize (void);
+extern unsigned char CompAssyPSize (void);
 void		  AppObjectInitAppLEDs (void)
 {
 	AppProductCode			 = 5000; //?
@@ -145,8 +142,8 @@ void		  AppObjectInitAppLEDs (void)
 //**********************************************************************
 void SHWInit (void);
 
-void InitRxTxAssy (void);
-void CustParamInit (void);
+extern void InitRxTxAssy (void);
+extern void CustParamInit (void);
 
 void AppObjectInit ()
 {
@@ -169,7 +166,7 @@ void AppObjectInit ()
 //
 //             Copyright (c) 1999 Allen-Bradley Co.
 //**********************************************************************
-void ParamClassReset (void);
+extern void ParamClassReset (void);
 void AppObjectFactoryDefaults ()
 {
 	ParamClassReset ();
@@ -214,8 +211,14 @@ void AppObjectMonitorIO (void) //?
 {
 
 	TimerObjectSvcTimer ();
-	main_port_serial();
-	TimerObjectSvcTimer ();
+
+//	SHWMain ();
+
+//	TimerObjectSvcTimer ();
+
+//	RRecMain ();
+
+//	TimerObjectSvcTimer ();
 
 	// assy main proc
 	if (new_produce_data_avail)
@@ -373,10 +376,10 @@ void AppObjectFillStrobeData (void)
  *
  ****/
 
-void *ParamFuncRom (MSG *);
-void *AsciiFunc (MSG *);
-void *SRecProtFunc (MSG *);
-void *RRecProtFunc (MSG *);
+extern void *ParamFuncRom (MSG *);
+extern void *AsciiFunc (MSG *);
+extern void *SRecProtFunc (MSG *);
+extern void *RRecProtFunc (MSG *);
 
 void AppObject (void)
 {
@@ -438,7 +441,6 @@ void AppObject (void)
 //
 //             Copyright (c) 1999 Allen-Bradley Co.
 //**********************************************************************
-void AssyCFunc (MSG *);
 
 unsigned char consume_data_size;
 BOOL		  AppObjectPollConsume (void)
@@ -483,8 +485,8 @@ BOOL AppObjectStrobeConsume (void)
  *
  *
  ******/
-void  AssemblyFill (MSG *msg);
-void *AssemblyFunc (MSG *msg);
+extern void  AssemblyFill (MSG *msg);
+extern void *AssemblyFunc (MSG *msg);
 
 void AppAssemblyObject (void)
 {
