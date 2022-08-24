@@ -42,7 +42,8 @@ static EEPROMObjectStructure EEPROMObjectRAM;
 //
 //             Copyright (c) 1999 Allen-Bradley Co.
 //**********************************************************************
-void ParamEEReset (void);
+
+extern void ParamEEReset (void);
 
 void EEPROMObjectInit (void)
 {

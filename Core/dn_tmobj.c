@@ -18,7 +18,7 @@ extern void UIObjectLEDRefresh (void);
 
 extern uchar AppObjectInitialized;
 
-static unsigned int	 TimerObjectTick;
+static unsigned int 	TimerObjectTick;
 static unsigned char TimerTicks; // inc'ed in ISR, dec'ed in foreground
 unsigned char		 TryCount;
 unsigned char		 FilterBusEnInPin;
@@ -110,6 +110,7 @@ void EnableInterrupts (void);
 void TimerObjectISR (void)
 {
 	TimerTicks++;
+	TimerObjectTick++; //TODO to check 8 ms timer based logic
 	DisableInterrupts ();
 	EnableLineObjectProcess ();
 	EnableInterrupts ();
@@ -164,10 +165,13 @@ unsigned char TimerObjectSvcTimer (void)
 	/*
 	// Every 8ms check conenction timers and update Uon timers and update User Interface
 	*/
-	TimerObjectTick = (TimerObjectTick + 1) % 8;
-	if (!TimerObjectTick)
-	{
+//	TimerObjectTick = (TimerObjectTick + 1) % 8;
+	int timer_elapse_1 = 0;
+	timer_elapse_1 = (TimerObjectTick / 8);
+	TimerObjectTick = (TimerObjectTick % 8);
 
+	if (!TimerObjectTick || timer_elapse_1)
+	{
 		static int MB_TimeOut;
 	      if(ModbusConfig.timeout != 0)
 	      {

@@ -220,6 +220,7 @@ GMM_RESTART:
 
 		TimerObjectSvcTimer ();
 
+		main_port_serial();
 		// If our master changed a communication parameter then dellocate current
 		// connections and reinitialize communications with new configuration
 		if (MessageObjectRAM.bCommParamChange)

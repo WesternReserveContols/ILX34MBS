@@ -848,7 +848,7 @@ unsigned char debugbuffer[20];
 unsigned char debugcount;
 unsigned char debugerrorcount = 0;
 
-void TriggerCOS (void);
+extern void TriggerCOS (void);
 
 bool rxbuffertouse = 1;
 void RxSwapAndIncrement (unsigned char newRecNum)
