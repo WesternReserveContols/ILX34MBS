@@ -130,10 +130,10 @@ void SRecProtSetTxDataLen (MSG *msg);
 void SRecProtSetTxRec (MSG *msg);
 void AssySetComboStatus (MSG *msg);
 
-void GetProduceAssyNum(MSG * msg);
-void GetConsumeAssyNum(MSG  * msg);
-void SetConsumeAssyNum(MSG * msg);
-void SetProduceAssyNum(MSG * msg);
+extern void GetProduceAssyNum(MSG * msg);
+extern void GetConsumeAssyNum(MSG  * msg);
+extern void SetConsumeAssyNum(MSG * msg);
+extern void SetProduceAssyNum(MSG * msg);
 
 /* list of the parameters */
 PARAMROM paramlist[16]=
