@@ -1150,7 +1150,7 @@ BYTE TimerL,TimerH;
 //const unsigned int RTU_Timeout[6] = { 29166, 14583, 7292, 3646, 1823, 912 };
 // 1200>0.029166667, 2400>0.014583333, 4800>0.007291667, 9600>0.003645833, 19200>0.001822917, 38400>0.000911458
 //unsigned int BaudDiv[8] = { BAUD19, BAUD12, BAUD24, BAUD48, BAUD96, BAUD38 };
-const unsigned int RTU_Timeout[6] = { 1823, 29166, 14583, 7292, 3646, 1750}; // val/1000 milli seconds,
+const unsigned int RTU_Timeout[6] = { 1823, 29166, 8000, 7292, 3646, 1750}; // 8000us for 2400 Baud rate value hard coded to check performance
 
 /**
  * @brief InitRtuTimeout() Initialized RTU timer with buad rate based timeout.
@@ -2578,11 +2578,11 @@ void InitMbParam(void)
 	{
 	   ModAttrib.Mode = Read_EE_Byte(EE_MODBUSMODE_ADDR); // Bug10
 	   Ascii.Framing =  Read_EE_Byte(EE_SERIAL_CHARACTER_FORMAT);  //Bug10
-//	   Ascii.Framing = 3; // TODO hard coded for value 3 means 8N1 for UART framing setting.
-//	   ModAttrib.Mode = RTU_MODE; //TODO make it enable to test with RTU. Also to make RTU working make Framing 3 (8N1)
 
 	   Ascii.BaudRate = Read_EE_Byte(EE_SERIAL_BAUDRATE);
 
+//        Ascii.Framing = 3; // TODO hard coded for value 3 means 8N1 for UART framing setting.
+//        ModAttrib.Mode = RTU_MODE; //TODO make it enable to test with RTU. Also to make RTU working make Framing 3 (8N1)
 	   timeout_reload_value  = Read_EE_Byte(EE_TIMEOUT_HI_ADDR);
 	   timeout_reload_value = timeout_reload_value << 8;
 	   timeout_reload_value += Read_EE_Byte(EE_TIMEOUT_LOW_ADDR);
