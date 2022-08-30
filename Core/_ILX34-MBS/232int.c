@@ -406,8 +406,9 @@ void AppObject (void)
 
 	case 0x70:
 		f = AsciiFunc (&msg);
+		g_status = SERVICE_NOT_SUPPORTED;
+		g_addCode = 0xFF;
 		break;
-
 	case 0x71:
 		f = SRecProtFunc (&msg);
 		break;

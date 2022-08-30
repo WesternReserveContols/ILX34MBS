@@ -84,7 +84,7 @@ void MX_TIM15_Init (int period)
 	uwTimclock = 2 * HAL_RCC_GetPCLK1Freq ();
 
 	/* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
-	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000) - 1);
+	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000));
 
 	/* Initialize TIM6 */
 	htim15.Instance = TIM15;
@@ -95,8 +95,8 @@ void MX_TIM15_Init (int period)
 	+ ClockDivision = 0
 	+ Counter direction = Up
 	*/
-	htim15.Init.Period		 = (period); //10000 - 1; //for 10ms
-	htim15.Init.Prescaler	 = uwPrescalerValue*100;
+	htim15.Init.Period		 = (period); //value in micro seconds as Prescaler makes clock 1MHz
+	htim15.Init.Prescaler	 = uwPrescalerValue * 10;
 	htim15.Init.CounterMode	 = TIM_COUNTERMODE_UP;
 	htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	htim15.Init.RepetitionCounter = 0;

@@ -40,8 +40,8 @@ unsigned char paramtxlen					  = 0;
 bool		  UseTxDelimAlgor				  = 0;
 bool		  ParamUseTxDelimAlgor			  = 0;
 
-bool isparityerror (unsigned char portnum);
-void clearparityerror (unsigned char portnum);
+extern bool isparityerror (unsigned char portnum);
+extern void clearparityerror (unsigned char portnum);
 
 void SRecProtGetTxRec (MSG *msg)
 {
@@ -124,10 +124,10 @@ void SRecProtGetSwap (MSG *msg)
 // until here, and then we only have to parse once per send, instead of once per set
 // I made this routine in the small memory model because of the disable interrupts
 // i want this routine to go FAST.
-void my_putc (unsigned char port, char c);
+extern void my_putc (unsigned char port, char c);
 
-void ToggleAndLockSyncBits (void);
-void UnlockAndUpdateSyncBits (void);
+extern void ToggleAndLockSyncBits (void);
+extern void UnlockAndUpdateSyncBits (void);
 
 void ParseAndSendTxStr (unsigned char a, unsigned char UseDelim)
 {
