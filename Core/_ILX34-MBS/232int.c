@@ -337,9 +337,6 @@ void AppObjectFillPollData (void)
 		while(len--) *(dest++)=*(src++);
 		*/
 		// copy it
-#ifdef Rick_TEST // 8/13/2022
-		mainloopassydata[0]=MB_Status;
-#endif
 		xdata_memcpy (P_OutMsgBuffer, mainloopassydata, P_OutMsgBufferSize = size_of_mainloopassydata);
 		polldatachanged = 0;
 	}
