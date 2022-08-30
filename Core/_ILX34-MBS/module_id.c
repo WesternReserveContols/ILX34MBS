@@ -104,7 +104,7 @@ bool Module_ID_Initialized ()
 static Module_Type Module_ID_Read_Pins ()
 {
 	Module_Type type = MODULE_TYPE_UNINITIALIZED;
-
+/* Rick_TEST 8/29/2022
 	if (pin_id_1734_232 ())
 		type &= MODULE_TYPE_1734_232;
 
@@ -116,7 +116,7 @@ static Module_Type Module_ID_Read_Pins ()
 
 	if (pin_id_1738_485 ())
 		type &= MODULE_TYPE_1738_485;
-
+*/
 	if (pin_id_34_232 ())
 		type &= MODULE_TYPE_ILX34_MBS232;
 

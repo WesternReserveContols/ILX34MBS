@@ -37,12 +37,12 @@ bool pin_id_1738_485 ()
 
 bool pin_id_34_232 ()
 {
-	// return mock_pin_id_34_232;
-	return (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_6)) && (!HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_7)) && (HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_0)) && (!HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_1));
+	// return mock_pin_id_34_232;    Rick_TEST  8/29/2022
+	return (!HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_6)) && (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_7)) && (!HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_0)) && (HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_1));
 }
 
 bool pin_id_34_485 ()
 {
-	// return mock_pin_id_34_485;
-	return (!HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_6)) && (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_7)) && (!HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_0)) && (HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_1));
+	// return mock_pin_id_34_485;  Rick_TEST  8/29/2022
+	return (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_6)) && (!HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_7)) && (HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_0)) && (!HAL_GPIO_ReadPin (GPIOB, GPIO_PIN_1));
 }
