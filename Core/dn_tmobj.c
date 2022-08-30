@@ -148,7 +148,7 @@ void TimerObjectISR (void)
 //             Copyright (c) 1994 Allen-Bradley Co.
 //***********************************************************************/
 
-void yield_thread (void);
+extern void yield_thread (void);
 
 unsigned long uptime = 0;
 unsigned char TimerObjectSvcTimer (void)

@@ -9,7 +9,7 @@
 #include "dsc.h"
 #include "app_main.h"
 
-void main_serial (void);
+extern void main_serial (void);
 void yield_thread (void);
 
 static Context_t *myContext;

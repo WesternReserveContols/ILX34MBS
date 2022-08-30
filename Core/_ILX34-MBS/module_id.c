@@ -160,18 +160,18 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef Rick_TEST
+#ifdef SIM_CONSUME
 
 	Module_Type type = MODULE_TYPE_ILX34_MBS485;
 	Module_ID_Set_Global_Variables (type);
 #else
 	if (!Module_ID_Initialized ())
 	{
-	Module_Type type = Module_ID_Read_Pins ();
+		Module_Type type = Module_ID_Read_Pins ();
 
 
-	Module_ID_Write_Flash (type);
-	Module_ID_Verify_Flash (type);
+		Module_ID_Write_Flash (type);
+		Module_ID_Verify_Flash (type);
 	}
 
 	Module_Type type = Module_ID_Read_Flash ();

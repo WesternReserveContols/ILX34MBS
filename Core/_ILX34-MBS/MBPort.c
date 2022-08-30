@@ -191,11 +191,9 @@ unsigned char Check_For_Valid_MB_Msg(unsigned char *buf, unsigned char len);
 void InitSerialIO(void);
 void Serial_RX_ISR(void);
 void Serial_TX_ISR(void);
-void UIObjectLedDrive(uchar ledbyte1, uchar ledbyte2);
-void UIObjectLEDRefresh(void);
-void MessageObjectSendPollMessage(void);
-void kick_watchdog(void);
 
+extern void UIObjectLEDRefresh(void);
+extern void MessageObjectSendPollMessage(void);
 extern void TriggerCOS(void);
 extern void MessageObjectFormatSuccessMessage(void);
 
@@ -259,16 +257,6 @@ void RestoreSerialFromEE (void)
  */
 void InitSerialIO(void)
 {
-
-#ifndef Rick_TEST   // Bug11
-	static char init_status = 0;
-
-   if (init_status ==1)
-	   return;
-
-   init_status = 1;
-#endif
-
 
    mb_timer = 0;
    mb_data_buffer_out_len = 0;
@@ -1303,7 +1291,6 @@ unsigned char StIn,CrIn;
 unsigned char err;
 char recChar;
 unsigned char RiCount = 0;
-void UIObjectLEDRefresh(void);
 
 /**
  * @brief Serial_RX_ISR() It will receive and store the byte by byte until MODBUS last byte

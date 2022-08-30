@@ -24,7 +24,7 @@
 #include "module_id.h"
 
 void SystemClock_Config (void);
-void MX_FREERTOS_Init (void);
+extern void MX_FREERTOS_Init (void);
 
 int main (void)
 {
