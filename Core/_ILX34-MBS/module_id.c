@@ -160,7 +160,7 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef SIM_CONSUME
+#ifdef Rick_TEST
 
 	Module_Type type = MODULE_TYPE_ILX34_MBS485;
 	Module_ID_Set_Global_Variables (type);
