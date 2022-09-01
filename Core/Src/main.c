@@ -90,6 +90,17 @@ int main (void)
 	(void)c;
 	(void)d;
 	*/
+
+	HAL_FLASH_Unlock ();
+	FLASH_EraseInitTypeDef erase;
+	erase.NbPages	  = 1;
+	erase.PageAddress = 0x801F800;
+	erase.TypeErase	  = FLASH_TYPEERASE_PAGES;
+
+	uint32_t PageError = 0;
+	HAL_FLASHEx_Erase (&erase, &PageError);
+	HAL_FLASH_Lock ();
+
 	Module_ID_Init ();
 
 	/*Disabled: deemed unnesesary
