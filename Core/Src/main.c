@@ -64,9 +64,8 @@ int main (void)
 	}
 
 	/* manually reset module ID for testing */
-	volatile bool resetFlash = false;
-	if (resetFlash)
-	{
+
+#ifdef Rick_TEST_NOT  // Rick_TEST 9/2/2022  used for enable writing to flash for writing.
 		HAL_FLASH_Unlock ();
 		FLASH_EraseInitTypeDef erase;
 		erase.NbPages	  = 1;
@@ -76,7 +75,7 @@ int main (void)
 		uint32_t PageError = 0;
 		HAL_FLASHEx_Erase (&erase, &PageError);
 		HAL_FLASH_Lock ();
-	}
+#endif
 
 	Module_ID_Init ();
 

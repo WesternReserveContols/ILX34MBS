@@ -160,31 +160,25 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef Rick_TEST
-
+#ifdef Rick_TEST_MOD_ID
+/*  // Load Module_ID direct  Rick_TEST
 	Module_Type type = MODULE_TYPE_ILX34_MBS485;
 	Module_ID_Set_Global_Variables (type);
+*/
+	if(1)  // Forced to read pins and write to Flash
 #else
-	Module_Type type = Module_ID_Read_Flash ();
-	Module_Type typePin = Module_ID_Read_Pins ();
-	if ( type != typePin )
-	{
-		HAL_FLASH_Unlock ();
-		FLASH_EraseInitTypeDef erase;
-		erase.NbPages	  = 1;
-		erase.PageAddress = 0x801F800;
-		erase.TypeErase	  = FLASH_TYPEERASE_PAGES;
-
-		uint32_t PageError = 0;
-		HAL_FLASHEx_Erase (&erase, &PageError);
-		HAL_FLASH_Lock ();
-
-		Module_ID_Write_Flash (typePin);
-		Module_ID_Verify_Flash (typePin);
-		type = typePin;
-	}
-	Module_ID_Set_Global_Variables (type);
+	if (!Module_ID_Initialized ())
 #endif
+
+	{
+	Module_Type type = Module_ID_Read_Pins ();
+	Module_ID_Write_Flash (type);
+	Module_ID_Verify_Flash (type);
+	}
+
+	Module_Type type = Module_ID_Read_Flash ();
+	Module_ID_Set_Global_Variables (type);
+
 }
 
 // 1734 Application Global Variables
