@@ -64,9 +64,8 @@ int main (void)
 	}
 
 	/* manually reset module ID for testing */
-	/*
-	volatile bool foo = false;
-	if (foo)
+	volatile bool resetFlash = false;
+	if (resetFlash)
 	{
 		HAL_FLASH_Unlock ();
 		FLASH_EraseInitTypeDef erase;
@@ -79,17 +78,6 @@ int main (void)
 		HAL_FLASH_Lock ();
 	}
 
-	Test pins
-
-	volatile bool a = pin_id_1734_232 ();
-	volatile bool b = pin_id_1734_485 ();
-	volatile bool c = pin_id_1738_232 ();
-	volatile bool d = pin_id_1738_485 ();
-	(void)a;
-	(void)b;
-	(void)c;
-	(void)d;
-	*/
 	Module_ID_Init ();
 
 	/*Disabled: deemed unnesesary
