@@ -336,6 +336,7 @@ void AppObjectFillPollData (void)
 		unsigned char len=P_OutMsgBufferSize=size_of_mainloopassydata;
 		while(len--) *(dest++)=*(src++);
 		*/
+		mainloopassydata[0]=MB_Status;
 		// copy it
 		xdata_memcpy (P_OutMsgBuffer, mainloopassydata, P_OutMsgBufferSize = size_of_mainloopassydata);
 		polldatachanged = 0;
