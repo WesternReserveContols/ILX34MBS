@@ -11,6 +11,12 @@
 #include <dn_def.h>
 #include <std.h>
 
+#define MOD_TOGGLE                  0x01  //set to toggle MOD LED RED/GREEN
+#define NET_TOGGLE                  0x02  //set to toggle NET LED RED/GREEN
+#define MOD_LAST_STATE              0x40  //used internally
+#define NET_LAST_STATE              0x80  //used internally
+
+
 #define MOD_LED_GREEN_BIT 0x01
 #define MOD_LED_RED_BIT	  0x02
 #define NET_LED_GREEN_BIT 0x04

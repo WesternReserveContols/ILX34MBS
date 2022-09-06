@@ -277,7 +277,7 @@ unsigned char TimerObjectSvcTimer (void)
 	}
 	else
 	{
-		if ((ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud) && (TimerObjectTick < 3))
+		if ((ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud) && (TimerObjectTick < 5)) //TODO 3 is changed with 5 value
 			UIObjectLEDRefresh (); // update LED's
 		else
 			UIObjectClearLEDs (); // save power - turn off leds
