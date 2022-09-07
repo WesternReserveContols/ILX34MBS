@@ -1020,7 +1020,7 @@ void ParamEEReset (void)
 
 void *ParamFuncRom (MSG *msg)
 {
-	if (msg->instance > 27)
+	if (msg->instance > 16) // Changed from 27 to 16 to match Legacy code.
 	{
 		g_status = OBJECT_DOES_NOT_EXIST;
 		return NULL;
