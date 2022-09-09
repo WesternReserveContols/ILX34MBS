@@ -2561,7 +2561,7 @@ void Mb_FactoryDefaults(void)
  */
 void InitMbParam(void)
 {
-	if (Read_EE_Byte(EE_MODBUSMODE_ADDR) != 0x55)
+	if (1)
 	{
 	   ModAttrib.Mode = Read_EE_Byte(EE_MODBUSMODE_ADDR); // Bug10
 	   Ascii.Framing =  Read_EE_Byte(EE_SERIAL_CHARACTER_FORMAT);  //Bug10
@@ -2648,13 +2648,9 @@ void InitMbParam(void)
 
 	InitAssembly();
 
-	InitSerialIO();
 	 // DRC 2/19/2015 Added to bypass call to AssyConfigFunc that was taken
 	 // out of the InitAssembly() routine.
    // DRC 3/10/2015 took out so MB buadrate change takes effect after reset as v1.13 does InitSerialIO();
-
-
-
 }
 
 /**

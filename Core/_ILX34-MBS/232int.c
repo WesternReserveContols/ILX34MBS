@@ -170,7 +170,7 @@ extern void ParamClassReset (void);
 void AppObjectFactoryDefaults ()
 {
 	ParamClassReset ();
-	CustParamInit ();
+//	CustParamInit (); // changes matched with Legacy code
 }
 
 //**********************************************************************

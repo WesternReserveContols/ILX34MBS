@@ -31,7 +31,7 @@
 ///////// Because most of the data is hard coded, I am going to make a structure
 void Write_EE_Byte (unsigned int addr, unsigned char val)
 {
-	BumpCCV ();
+//	BumpCCV ();
 	EEPROMObjectWriteAndUpdate (addr, val);
 }
 
