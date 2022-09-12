@@ -93,6 +93,7 @@ void Thread_Timer (void *argument)
 
 #ifdef SIM_CONSUME
 		static int temp = 0;
+		extern void AppObjectMonitorIO (void);
 		if ((++temp >= 20000) && (AppObjectInitialized))
 		{
 			temp = 0;

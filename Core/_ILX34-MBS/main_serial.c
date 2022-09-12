@@ -122,7 +122,6 @@ SOFT_RESET:
 
 	KICK_WDOG ();
 
-
 	/*
 	// Initialize application objects
 	*/

@@ -185,6 +185,7 @@ void InitCAN ()
 	CM_MCFG_Set_Direction (XMIT_COS_MESSAGE_OBJECT, CM_TRANSMIT);
 	CM_MCFG_Set_Length (XMIT_COS_MESSAGE_OBJECT,
 						IOCnxnSize[CSI_C_PROD] & 0xF); // TODO: value > 8 almost certainly invalid
+	// TODO This is getting assert when value beocmes > 8, need to heck this.
 
 	CM_Set_UAR0 (XMIT_STROBE_MESSAGE_OBJECT, (STROBE_RSP << 3) | (DeviceNetObjectRAM.macId >> 3));
 	CM_Set_UAR1 (XMIT_STROBE_MESSAGE_OBJECT, (DeviceNetObjectRAM.macId << 5));

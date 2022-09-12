@@ -704,7 +704,7 @@ void ParamClassReset (void)
 	CustParamInit ();
 	InitRxTxAssy ();
 	InitMbParam();
-	RestoreSerialFromEE ();
+//	RestoreSerialFromEE ();
 }
 
 // New function called from the EE reset state

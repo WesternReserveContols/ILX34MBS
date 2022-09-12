@@ -64,17 +64,17 @@ void MX_TIM15_Init (int period)
 	uint32_t		   uwPrescalerValue = 0;
 	uint32_t		   pFLatency;
 
-	/*Configure the TIM6 IRQ priority */
+	/*Configure the TIM15 IRQ priority */
 	HAL_NVIC_SetPriority (TIM15_IRQn, 0, 0);
 
-	/* Enable the TIM6 global Interrupt */
+	/* Enable the TIM15 global Interrupt */
 	HAL_NVIC_EnableIRQ (TIM15_IRQn);
 
 	NVIC_GetPendingIRQ(TIM15_IRQn);
 
 	NVIC_ClearPendingIRQ (TIM15_IRQn);
 
-	/* Enable TIM6 clock */
+	/* Enable TIM15 clock */
 	__HAL_RCC_TIM15_CLK_ENABLE ();
 
 	/* Get clock configuration */
@@ -83,10 +83,10 @@ void MX_TIM15_Init (int period)
 	/* Compute TIM15 clock */
 	uwTimclock = 2 * HAL_RCC_GetPCLK1Freq ();
 
-	/* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
-	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000));
+	/* Compute the prescaler value to have TIM15 counter clock equal to 1MHz */
+	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000) - 1);
 
-	/* Initialize TIM6 */
+	/* Initialize TIM15 */
 	htim15.Instance = TIM15;
 
 	/* Initialize TIMx peripheral as follow:
@@ -96,7 +96,7 @@ void MX_TIM15_Init (int period)
 	+ Counter direction = Up
 	*/
 	htim15.Init.Period		 = (period); //value in micro seconds as Prescaler makes clock 1MHz
-	htim15.Init.Prescaler	 = uwPrescalerValue * 10;
+	htim15.Init.Prescaler	 = uwPrescalerValue;
 	htim15.Init.CounterMode	 = TIM_COUNTERMODE_UP;
 	htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	htim15.Init.RepetitionCounter = 0;
@@ -108,8 +108,15 @@ void MX_TIM15_Init (int period)
 	}
 }
 
+void TIM_ResetCounter(TIM_TypeDef* TIMx)
+{
+  /* Reset the Counter Register value */
+  TIMx->CNT = 0;
+}
+
 void MX_TIM15_Start (void)
 {
+	TIM_ResetCounter(TIM15);
 	__HAL_TIM_CLEAR_IT(&htim15, TIM_IT_UPDATE);
 	HAL_TIM_Base_Start_IT (&htim15);
 }
