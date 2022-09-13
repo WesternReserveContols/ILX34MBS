@@ -148,7 +148,7 @@ void TimerObjectISR (void)
 //             Copyright (c) 1994 Allen-Bradley Co.
 //***********************************************************************/
 
-void yield_thread (void);
+extern void yield_thread (void);
 
 unsigned long uptime = 0;
 unsigned char TimerObjectSvcTimer (void)
@@ -277,7 +277,7 @@ unsigned char TimerObjectSvcTimer (void)
 	}
 	else
 	{
-		if ((ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud) && (TimerObjectTick < 3))
+		if ((ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud) && (TimerObjectTick < 5)) //TODO 3 is changed with 5 value
 			UIObjectLEDRefresh (); // update LED's
 		else
 			UIObjectClearLEDs (); // save power - turn off leds

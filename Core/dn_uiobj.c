@@ -12,6 +12,7 @@ void UIObjectLedDrive (uchar ledbyte1, uchar ledbyte2);
 void UIObjectLEDRefresh (void);
 
 UIObjectStructure UIObjectRAM;
+unsigned char ToggleLEDS = 0;
 
 //***********************************************************************
 //
@@ -279,7 +280,17 @@ void UIObjectLEDUpdate ()
 		else
 		{
 			UIObjectRAM.cLEDByte1 &= 0xF0; // clear out low 4 bits (for mod/net leds)
-			MOD_LED_GREEN;				   // Preload
+
+		    if(ToggleLEDS && MOD_TOGGLE)
+		    {
+		         if(ToggleLEDS & MOD_LAST_STATE) MOD_LED_GREEN;
+		         else MOD_LED_RED;
+
+				 ToggleLEDS ^= MOD_LAST_STATE;
+				 UIObjectRAM.cFlashTimerVal = FLASHTIME;
+			 }
+		     else MOD_LED_GREEN;	   // Preload MOD_LED
+
 
 			if (DUPLICATEMACFAIL == UIObjectRAM.cHealthState)
 			{
@@ -319,10 +330,11 @@ void UIObjectLEDUpdate ()
 
 			else if (UIObjectRAM.cLEDToggle)
 			{
-
 				if (NORMALOPERATION == UIObjectRAM.cHealthState		   // Online is always Green
 					|| GRP2IDSETALLOCATED == UIObjectRAM.cHealthState) // Online is always Green
-					NET_LED_GREEN;
+				{
+					if((ToggleLEDS & NET_TOGGLE) == 0) NET_LED_GREEN;
+				}
 				else
 				{
 					if (EPRERRORFLAG == UIObjectRAM.cHealthState || CANBUSOFF == UIObjectRAM.cHealthState)
@@ -342,7 +354,14 @@ void UIObjectLEDUpdate ()
 				else
 				{
 					if (GRP2IDSETALLOCATED == UIObjectRAM.cHealthState)
-						NET_LED_GREEN;
+						if(ToggleLEDS && NET_TOGGLE)
+						{
+							if(ToggleLEDS & NET_LAST_STATE) NET_LED_GREEN;
+							else NET_LED_RED;
+							ToggleLEDS ^= NET_LAST_STATE;
+							UIObjectRAM.cFlashTimerVal = FLASHTIME;
+					    }
+					    else NET_LED_GREEN;
 					// else net_led_off - no required
 				}
 			}

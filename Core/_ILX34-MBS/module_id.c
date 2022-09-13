@@ -104,7 +104,7 @@ bool Module_ID_Initialized ()
 static Module_Type Module_ID_Read_Pins ()
 {
 	Module_Type type = MODULE_TYPE_UNINITIALIZED;
-
+/* Rick_TEST 8/29/2022
 	if (pin_id_1734_232 ())
 		type &= MODULE_TYPE_1734_232;
 
@@ -116,7 +116,7 @@ static Module_Type Module_ID_Read_Pins ()
 
 	if (pin_id_1738_485 ())
 		type &= MODULE_TYPE_1738_485;
-
+*/
 	if (pin_id_34_232 ())
 		type &= MODULE_TYPE_ILX34_MBS232;
 
@@ -160,23 +160,25 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef Rick_TEST
-
+#ifdef Rick_TEST_MOD_ID
+/*  // Load Module_ID direct  Rick_TEST
 	Module_Type type = MODULE_TYPE_ILX34_MBS485;
 	Module_ID_Set_Global_Variables (type);
+*/
+	if(1)  // Forced to read pins and write to Flash
 #else
 	if (!Module_ID_Initialized ())
+#endif
+
 	{
 	Module_Type type = Module_ID_Read_Pins ();
-
-
 	Module_ID_Write_Flash (type);
 	Module_ID_Verify_Flash (type);
 	}
 
 	Module_Type type = Module_ID_Read_Flash ();
 	Module_ID_Set_Global_Variables (type);
-#endif
+
 }
 
 // 1734 Application Global Variables

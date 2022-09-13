@@ -31,7 +31,7 @@
 ///////// Because most of the data is hard coded, I am going to make a structure
 void Write_EE_Byte (unsigned int addr, unsigned char val)
 {
-	BumpCCV ();
+//	BumpCCV ();
 	EEPROMObjectWriteAndUpdate (addr, val);
 }
 
@@ -704,7 +704,7 @@ void ParamClassReset (void)
 	CustParamInit ();
 	InitRxTxAssy ();
 	InitMbParam();
-	RestoreSerialFromEE ();
+//	RestoreSerialFromEE ();
 }
 
 // New function called from the EE reset state
@@ -718,7 +718,7 @@ void ParamEEReset (void)
 
 void *ParamFuncRom (MSG *msg)
 {
-	if (msg->instance > 27)
+	if (msg->instance > 16) // Changed from 27 to 16 to match Legacy code.
 	{
 		g_status = OBJECT_DOES_NOT_EXIST;
 		return NULL;

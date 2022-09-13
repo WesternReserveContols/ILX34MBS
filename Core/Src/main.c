@@ -24,7 +24,7 @@
 #include "module_id.h"
 
 void SystemClock_Config (void);
-void MX_FREERTOS_Init (void);
+extern void MX_FREERTOS_Init (void);
 
 int main (void)
 {
@@ -64,10 +64,8 @@ int main (void)
 	}
 
 	/* manually reset module ID for testing */
-	/*
-	volatile bool foo = false;
-	if (foo)
-	{
+
+#ifdef Rick_TEST_NOT  // Rick_TEST 9/2/2022  used for enable writing to flash for writing.
 		HAL_FLASH_Unlock ();
 		FLASH_EraseInitTypeDef erase;
 		erase.NbPages	  = 1;
@@ -77,19 +75,8 @@ int main (void)
 		uint32_t PageError = 0;
 		HAL_FLASHEx_Erase (&erase, &PageError);
 		HAL_FLASH_Lock ();
-	}
+#endif
 
-	Test pins
-
-	volatile bool a = pin_id_1734_232 ();
-	volatile bool b = pin_id_1734_485 ();
-	volatile bool c = pin_id_1738_232 ();
-	volatile bool d = pin_id_1738_485 ();
-	(void)a;
-	(void)b;
-	(void)c;
-	(void)d;
-	*/
 	Module_ID_Init ();
 
 	/*Disabled: deemed unnesesary

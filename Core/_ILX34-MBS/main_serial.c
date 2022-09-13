@@ -122,7 +122,6 @@ SOFT_RESET:
 
 	KICK_WDOG ();
 
-
 	/*
 	// Initialize application objects
 	*/
@@ -207,10 +206,10 @@ GMM_RESTART:
 	{
 
 		if(SoftReset == SOFT_RESET_ACTIVE)
-					{
-						SoftReset = 0;
-						STARTUP1();  //Rick_TEST Bug9    goto SOFT_RESET;
-					}
+		{
+			SoftReset = 0;
+			STARTUP1();  //Rick_TEST Bug9    goto SOFT_RESET;
+		}
 		// nonblocking write to eeprom for any outstanding RAM values
 		EEPROMObjectWriteRAMtoEE (0);
 

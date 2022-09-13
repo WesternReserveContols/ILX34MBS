@@ -170,7 +170,7 @@ extern void ParamClassReset (void);
 void AppObjectFactoryDefaults ()
 {
 	ParamClassReset ();
-	CustParamInit ();
+//	CustParamInit (); // changes matched with Legacy code
 }
 
 //**********************************************************************
@@ -336,10 +336,8 @@ void AppObjectFillPollData (void)
 		unsigned char len=P_OutMsgBufferSize=size_of_mainloopassydata;
 		while(len--) *(dest++)=*(src++);
 		*/
-		// copy it
-#ifdef Rick_TEST // 8/13/2022
 		mainloopassydata[0]=MB_Status;
-#endif
+		// copy it
 		xdata_memcpy (P_OutMsgBuffer, mainloopassydata, P_OutMsgBufferSize = size_of_mainloopassydata);
 		polldatachanged = 0;
 	}
