@@ -122,10 +122,15 @@ SOFT_RESET:
 
 	KICK_WDOG ();
 
+
+
+
+#ifdef SIM_CONSUME
+
 	/*
 	// Initialize application objects
+	// Put before DUPMAC to allow offline debugging.
 	*/
-#ifdef SIM_CONSUME
 	InitApplicationObjects ();
 	AppObjectInitialized = TRUE;
 #endif
@@ -149,8 +154,10 @@ SOFT_RESET:
 	/*
 	// Initialize application objects
 	*/
+	KICK_WDOG ();					// Rick 9/11/22 added to be consistent with Legacy code.
 	InitApplicationObjects ();
 	AppObjectInitialized = TRUE;
+	KICK_WDOG ();
 
 
 DO_DUPMACS:

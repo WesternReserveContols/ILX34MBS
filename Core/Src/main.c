@@ -63,19 +63,6 @@ int main (void)
 		DSC_Writes (DSC_LEVEL_INFO, "SW RESET\n\r");
 	}
 
-	/* manually reset module ID for testing */
-
-#ifdef Rick_TEST_NOT  // Rick_TEST 9/2/2022  used for enable writing to flash for writing.
-		HAL_FLASH_Unlock ();
-		FLASH_EraseInitTypeDef erase;
-		erase.NbPages	  = 1;
-		erase.PageAddress = 0x801F800;
-		erase.TypeErase	  = FLASH_TYPEERASE_PAGES;
-
-		uint32_t PageError = 0;
-		HAL_FLASHEx_Erase (&erase, &PageError);
-		HAL_FLASH_Lock ();
-#endif
 
 	Module_ID_Init ();
 

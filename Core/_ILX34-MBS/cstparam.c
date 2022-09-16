@@ -768,9 +768,9 @@ void *ParamFuncRom (MSG *msg)
 
 void CustParamInit (void)
 {
-	if (Read_EE_Byte (EE_CUST_PARAM_INIT_VAR) != 0x55)
-	{
-		Write_EE_Byte (EE_CUST_PARAM_INIT_VAR, 0x55);
+	if (Read_EE_Byte (EE_CUST_PARAM_INIT_VAR) != 0x55)  // Rick 9/11/2022 comment this is 0x55 when initializes.
+	{													// so Load the default parameter is not initializes.
+		Write_EE_Byte (EE_CUST_PARAM_INIT_VAR, 0x55);	// Bug18 This parameter list is for 1734_ASC module NOT ILX!!
 		Write_EE_Byte (EE_TX_REC_HEADER_MODE, 0);
 		Write_EE_Byte (EE_TX_DATA_STR_TYPE, 0x1);
 		Write_EE_Byte (EE_TX_SWAP_MODE, 0);
