@@ -310,6 +310,9 @@ void AppObjectFillCOSData (void)
 
 			// copy it up
 			xdata_memcpy (C_OutMsgBuffer, mainloopassydata, C_OutMsgBufferSize = size_of_mainloopassydata);
+		  	C_OutMsgBufferSize = size_of_mainloopassydata;  // Rick_TESDT Added these three lines from Legacy code back 9/2/2022
+			C_OutMsgBuffer[0] = MB_Status;
+			C_OutMsgBuffer[1] = MB_Exception;
 			cosdatachanged = 0;
 		}
 }
@@ -342,6 +345,9 @@ void AppObjectFillPollData (void)
 		polldatachanged = 0;
 	}
 	// stuff the buffer if anything needs to be done here
+	P_OutMsgBuffer[0] = MB_Status;    // Rick_TEST Addes these two lines from Legacy code 9/2/2022
+	P_OutMsgBuffer[1] = MB_Exception;
+
 }
 
 //**********************************************************************
