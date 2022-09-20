@@ -1,9 +1,0 @@
-../Core/dn_idobj.c:52:6:IdentityObjectGetInstanceAttr	24	static
-../Core/dn_idobj.c:147:6:IdentityObjectSetInstanceAttr	8	static
-../Core/dn_idobj.c:193:6:IdentityObjectInit	8	static
-../Core/dn_idobj.c:232:6:IdentityObject	8	static
-../Core/dn_idobj.c:329:6:IdentityObjectSecretSet	16	static
-../Core/dn_idobj.c:420:6:NewIDObjBackDoor	8	static
-../Core/dn_idobj.c:486:6:DebugIDObject	8	static
-../Core/dn_idobj.c:520:6:DebugIDObjectGetInstanceAttr	8	static
-../Core/dn_idobj.c:553:6:DebugIDObjectSetInstanceAttr	8	static

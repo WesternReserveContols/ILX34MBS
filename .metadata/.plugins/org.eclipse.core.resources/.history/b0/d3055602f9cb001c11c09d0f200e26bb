@@ -1,3 +1,0 @@
-../Core/mutex/mutex-freertos-stm32f072.c:12:6:Mutex_Init	16	static
-../Core/mutex/mutex-freertos-stm32f072.c:26:6:Mutex_Lock	16	static
-../Core/mutex/mutex-freertos-stm32f072.c:32:6:Mutex_Unlock	16	static

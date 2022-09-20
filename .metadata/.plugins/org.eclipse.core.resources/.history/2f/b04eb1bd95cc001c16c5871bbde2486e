@@ -1,8 +1,0 @@
-../Core/cstparam.c:31:6:Write_EE_Byte	16	static
-../Core/cstparam.c:37:15:Read_EE_Byte	16	static
-../Core/cstparam.c:958:6:ParamClassInstance	16	static
-../Core/cstparam.c:988:6:ParamGetRom	32	static
-../Core/cstparam.c:1003:6:ParamClassReset	8	static
-../Core/cstparam.c:1014:6:ParamEEReset	8	static
-../Core/cstparam.c:1020:7:ParamFuncRom	16	static
-../Core/cstparam.c:1070:6:CustParamInit	8	static

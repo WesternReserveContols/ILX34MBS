@@ -1,6 +1,0 @@
-../Core/can/can_fifo.c:34:6:CAN_FIFO_Reset	8	static
-../Core/can/can_fifo.c:41:6:IS_CAN_FIFO_Full	8	static
-../Core/can/can_fifo.c:46:6:IS_CAN_FIFO_Empty	8	static
-../Core/can/can_fifo.c:51:5:CAN_FIFO_Num_Elements	8	static
-../Core/can/can_fifo.c:56:6:CAN_FIFO_Put	24	static
-../Core/can/can_fifo.c:68:6:CAN_FIFO_Get	24	static

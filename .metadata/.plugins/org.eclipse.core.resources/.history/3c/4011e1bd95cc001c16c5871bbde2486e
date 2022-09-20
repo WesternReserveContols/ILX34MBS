@@ -1,9 +1,0 @@
-../Core/serial/serial_hal-freertos-stm32f072.c:34:15:SH_Init	8	static
-../Core/serial/serial_hal-freertos-stm32f072.c:101:15:SH_Set_Parameters	16	static
-../Core/serial/serial_hal-freertos-stm32f072.c:230:6:SH_Disable_Interrupts	8	static
-../Core/serial/serial_hal-freertos-stm32f072.c:236:6:SH_Enable_Interrupts	8	static
-../Core/serial/serial_hal-freertos-stm32f072.c:243:6:SH_IRQ	24	static
-../Core/serial/serial_hal-freertos-stm32f072.c:318:15:SH_Put_Char	16	static
-../Core/serial/serial_hal-freertos-stm32f072.c:356:15:SH_Get_Char_ISR	16	static
-../Core/serial/serial_hal-freertos-stm32f072.c:390:13:Serial_RX_ISR	16	static
-../Core/serial/serial_hal-freertos-stm32f072.c:418:13:Serial_TX_ISR	8	static

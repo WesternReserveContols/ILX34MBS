@@ -1,5 +1,0 @@
-../Core/dnutils.c:15:7:DNChkAndRetAttrNum	16	static
-../Core/dnutils.c:25:6:DNGenericGetSetFill	16	static
-../Core/dnutils.c:35:6:DNAttributeNotSettable	16	static
-../Core/dnutils.c:41:6:DNAttributeNotSupported	16	static
-../Core/dnutils.c:47:6:DnCheckAttrLen	16	static

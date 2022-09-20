@@ -1,2 +1,0 @@
-Core/dnutils.o: ../Core/dnutils.c ../Core/msg.h
-../Core/msg.h:

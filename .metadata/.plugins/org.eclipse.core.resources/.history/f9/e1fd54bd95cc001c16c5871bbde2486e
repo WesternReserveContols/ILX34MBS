@@ -1,3 +1,0 @@
-Core/Src/DSC/circular_buffer.o: ../Core/Src/DSC/circular_buffer.c \
- ../Core/Src/DSC/circular_buffer.h
-../Core/Src/DSC/circular_buffer.h:

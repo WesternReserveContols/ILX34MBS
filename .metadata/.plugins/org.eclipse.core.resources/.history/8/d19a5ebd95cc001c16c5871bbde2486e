@@ -1,4 +1,0 @@
-../Core/Src/DSC/dsc_uart.c:16:6:dsc_uart_dma_init	16	static
-../Core/Src/DSC/dsc_uart.c:36:6:dsc_uart_gpio_init	32	static
-../Core/Src/DSC/dsc_uart.c:53:6:MX_DSC_UART_Init	16	static
-../Core/Src/DSC/dsc_uart.c:86:6:UART5_Start_DMA_TX	16	static

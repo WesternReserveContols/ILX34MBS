@@ -1,6 +1,0 @@
-../Core/Src/1734_debug.c:22:6:Error_Handler	8	static
-../Core/Src/1734_debug.c:51:6:Debug_LedCycle	16	static
-../Core/Src/1734_debug.c:64:6:Debug_Heartbeat	16	static
-../Core/Src/1734_debug.c:78:6:Debug_IsJumperInstalled	24	static
-../Core/Src/1734_debug.c:84:6:Debug_ReportError	16	static
-../Core/Src/1734_debug.c:127:6:Debug_SetTestLed	32	static

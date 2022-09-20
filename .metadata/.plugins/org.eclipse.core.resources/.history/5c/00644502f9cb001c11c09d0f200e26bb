@@ -1,6 +1,0 @@
-../Core/dn_init.c:35:6:InitCAN	8	static
-../Core/dn_init.c:274:6:InitCANforGrp4	16	static
-../Core/dn_init.c:347:6:InitDeviceNet	8	static
-../Core/dn_init.c:400:6:InitApplicationObjects	8	static
-../Core/dn_init.c:448:6:InitC505	8	static
-../Core/dn_init.c:473:6:InitFactoryDefaults	8	static

@@ -1,2 +1,0 @@
-../Core/c505c.c:12:6:EnableInterrupts	8	static
-../Core/c505c.c:16:6:DisableInterrupts	8	static

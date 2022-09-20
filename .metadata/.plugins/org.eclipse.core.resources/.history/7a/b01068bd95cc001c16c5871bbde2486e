@@ -1,8 +1,0 @@
-../Core/Src/i2c_eeprom.c:40:15:EE_HAL_WriteOne	40	static
-../Core/Src/i2c_eeprom.c:84:15:EE_HAL_ReadOne	32	static
-../Core/Src/i2c_eeprom.c:131:15:EE_HAL_Read	32	static
-../Core/Src/i2c_eeprom.c:170:5:Eeprom_test	80	static
-../Core/Src/i2c_eeprom.c:230:6:EE_Error	16	static
-../Core/Src/i2c_eeprom.c:243:13:I2C_EE_Report_Error	16	static
-../Core/Src/i2c_eeprom.c:263:6:EE_wait_until_ready	24	static
-../Core/Src/i2c_eeprom.c:289:6:MX_I2C1_Init	8	static

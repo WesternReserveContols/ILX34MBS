@@ -1,3 +1,0 @@
-../Core/context/thread_timer-freertos-stm32f072.c:26:6:Timer_Thread_Yield	8	static
-../Core/context/thread_timer-freertos-stm32f072.c:42:6:period_elapsed	16	static
-../Core/context/thread_timer-freertos-stm32f072.c:58:6:Thread_Timer	24	static

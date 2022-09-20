@@ -1,7 +1,0 @@
-Core/assembly.o: ../Core/assembly.c ../Core/ee_adr.h ../Core/dn_eeprm.h \
- ../Core/std.h ../Core/msg.h ../Core/fifo.h
-../Core/ee_adr.h:
-../Core/dn_eeprm.h:
-../Core/std.h:
-../Core/msg.h:
-../Core/fifo.h:

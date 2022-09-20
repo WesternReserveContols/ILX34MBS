@@ -1,2 +1,0 @@
-../Core/Src/gpio.c:3:6:IO_Init_1734_Pins	32	static
-../Core/Src/gpio.c:84:6:MX_GPIO_Init	56	static

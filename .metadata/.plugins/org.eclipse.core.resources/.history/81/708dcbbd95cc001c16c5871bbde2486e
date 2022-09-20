@@ -1,7 +1,0 @@
-../Core/fifo.c:7:15:FifoInit	24	static
-../Core/fifo.c:23:6:FifoPush	16	static
-../Core/fifo.c:34:6:FifoPush_bank1	16	static
-../Core/fifo.c:45:6:FifoPop	16	static
-../Core/fifo.c:58:6:FifoNPush	24	static
-../Core/fifo.c:69:6:FifoNPop	24	static
-../Core/fifo.c:80:14:FifoSize	16	static
