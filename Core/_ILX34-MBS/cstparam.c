@@ -667,20 +667,27 @@ void ParamClassInstance (MSG *msg)
 	}
 	msg->buf[1] = 0;
 	msg->buflen = 2;
-	switch (msg->attribute)
-	{
-	case 2:
-		msg->buf[0] = 27;
-		break;
-	case 8: // PARAMETER_CLASS_DESCRIPTOR:
-		msg->buf[0] = 0x09;
-		break;
-	case 9: // CONFIG_ASSY_INSTANCE:
-		msg->buf[0] = 0;
-		break;
-	default:
-		g_status = 0x14;
-	}
+	switch(msg->attribute)   // Rick_TEST Switch statement copied from Legacy code Bug20
+		{
+			case 2:
+				msg->buf[0]=16;
+				break;
+
+			case 3:
+				msg->buf[0]=16;
+				break;
+
+			case 8://PARAMETER_CLASS_DESCRIPTOR:
+				msg->buf[0]=0x09;
+				break;
+
+			case 9://CONFIG_ASSY_INSTANCE:
+				msg->buf[0]=103;
+				break;
+
+			default:
+				g_status=0x14;
+		}
 }
 
 void ParamGetRom (MSG *msg)

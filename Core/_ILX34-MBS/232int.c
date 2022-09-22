@@ -227,6 +227,8 @@ void AppObjectMonitorIO (void) //?
 		new_produce_data_avail = 0;
 		assymainprocnotbusy	   = 0;
 		msg.buf				   = mainloopassydata;
+		msg.buflen = CompAssyPSize ();    // Rick_TEST fix bug 19  msg. buffer set to 177 bytes by default, now set to P_ASSY_SIZE
+
 		AssyPFunc (&msg);
 		size_of_mainloopassydata = msg.buflen;
 		polldatachanged			 = 1;

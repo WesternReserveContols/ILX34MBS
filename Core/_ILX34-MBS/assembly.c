@@ -274,6 +274,50 @@ void SRecProtSetTxStrDelimiterMode (MSG *msg);
 void SRecProtSetSwap (MSG *msg);
 void SRecProtSetMode (MSG *msg);
 
+#ifdef Rick_TEST
+
+#define SETUP_CONFIG_MESSAGE \
+	ConfigMsg.service=0x0e; \
+	ConfigMsg.buflen=0;
+
+#define SETUP_CONFIG_MESSAGE_1 \
+	if(!(len--) || g_status)return;\
+	ConfigMsg.service=0x10;ConfigMsg.buflen=1;\
+	ConfigMsg.buf[0]=*ptr++;      // ILX-9
+
+#define SETUP_CONFIG_MESSAGE_2 \
+	if(!len || g_status)return;len=len-2;\
+	ConfigMsg.service=0x10;ConfigMsg.buflen=2;\
+	ConfigMsg.buf[0]=*ptr++;ConfigMsg.buf[1]=*ptr++;   // ILX-9
+
+#define SETUP_CONFIG_MESSAGE_4 \
+	if(!len || g_status)return;len=len-4;\
+	ConfigMsg.service=0x10;ConfigMsg.buflen=4;\
+	ConfigMsg.buf[0]=*ptr++;ConfigMsg.buf[1]=*ptr++;\
+    ConfigMsg.buf[2]=*ptr++;ConfigMsg.buf[3]=*ptr++;
+
+#define AFTER_CONFIG_MESSAGE_1 \
+	if(g_status)return; \
+	*ptr++=buf[0]; \
+	len++;
+
+#define AFTER_CONFIG_MESSAGE_2 \
+	if(g_status)return; \
+	*ptr++=buf[0]; \
+	*ptr++=buf[1]; \
+	len=len+2;
+
+#define AFTER_CONFIG_MESSAGE_4 \
+	if(g_status)return; \
+	*ptr++=buf[0]; \
+	*ptr++=buf[1]; \
+	*ptr++=buf[2]; \
+	*ptr++=buf[3]; \
+	len=len+4;
+
+
+#else
+//  Jighesh revised code
 
 #define SETUP_CONFIG_MESSAGE  \
 	if (!(len--) || g_status) \
@@ -311,9 +355,14 @@ void SRecProtSetMode (MSG *msg);
 	return; \
 	*(ptr++) = buf[0]; \
 	len++;
+
 #define AFTER_CONFIG_MESSAGE_2 if(g_status)return; \
 	*(ptr++)=buf[0];*(ptr++)=buf[1];len=len+2;
+
 #define AFTER_CONFIG_MESSAGE_4 if(g_status)return;*(ptr++)=buf[0];*(ptr++)=buf[1];*(ptr++)=buf[2];*(ptr++)=buf[3];len=len+4;
+
+#endif
+
 
 /**
  * @brief AssyConfigFunc() Function to get and set the assembly configurations.
@@ -340,7 +389,8 @@ void AssyConfigFunc (MSG *msg)
 	  if(msg->service==0x0e)//get
 	  {
 		  len=6;
-			for(idx=0;idx<len;idx++) *ptr++=0;//zero RA Reserved & Reserved1 bytes(4+2 bytes) ALSO points the ptr to the 1st valid config position (Framing)
+			for(idx=0;idx<len;idx++)
+				*ptr++=0;//zero RA Reserved & Reserved1 bytes(4+2 bytes) ALSO points the ptr to the 1st valid config position (Framing)
 	    ConfigMsg.buflen=len;
 	    SETUP_CONFIG_MESSAGE   //Reserved DINT jtm 09/19/13 inserted 4 byte space as per new spec
 		  AFTER_CONFIG_MESSAGE_4
@@ -356,27 +406,27 @@ void AssyConfigFunc (MSG *msg)
 		  MB_GetProtocol(&ConfigMsg);   //Protocol ASCII/RTU
 		  AFTER_CONFIG_MESSAGE_1
 
-			SETUP_CONFIG_MESSAGE
+		SETUP_CONFIG_MESSAGE
 		  GetConsumeAssyNum(&ConfigMsg);//Consume Assembly number
 		  AFTER_CONFIG_MESSAGE_1
 
-			SETUP_CONFIG_MESSAGE
-	  	GetBaudRate(&ConfigMsg);      //Baudrate
+		SETUP_CONFIG_MESSAGE
+	  	  GetBaudRate(&ConfigMsg);      //Baudrate
 		  AFTER_CONFIG_MESSAGE_1
 
 	  	SETUP_CONFIG_MESSAGE
 		  MB_GetType(&ConfigMsg);		    //Type Master/Slave
 		  AFTER_CONFIG_MESSAGE_1
 
-			SETUP_CONFIG_MESSAGE
-	  	GetProduceAssyNum(&ConfigMsg);//Produce Assembly number
+		SETUP_CONFIG_MESSAGE
+	  	  GetProduceAssyNum(&ConfigMsg);//Produce Assembly number
 		  AFTER_CONFIG_MESSAGE_1
 
 	    SETUP_CONFIG_MESSAGE
 		  MB_GetTimeout(&ConfigMsg);//Timeout 4 bytes allocated, but using 2 least significant bytes
 		  AFTER_CONFIG_MESSAGE_4    //jtm 09-18-13 Changed to 4 bytes as per new spec
 
-		  SETUP_CONFIG_MESSAGE
+		SETUP_CONFIG_MESSAGE
 		  MB_GetSlaveID(&ConfigMsg);
 		  AFTER_CONFIG_MESSAGE_2    //jtm 02-25-2013 changed from 1 byte to 2 bytes
 
