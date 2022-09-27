@@ -17,6 +17,8 @@
 #include "mbport.h"
 #include "dn_cnobj.h"
 
+extern uchar P_InMsgBuffer[]; // Rick_TEST This shoudl be include in the App_Objects.h
+
 #define ASSY_PINST		101
 #define ASSY_CINST		102
 #define ASSY_CONFIGINST 103
@@ -151,14 +153,28 @@ void				 AssyCFunc (MSG *msg)
 			unsigned char *dest = msg->buf;
 			unsigned char *src;
 			unsigned char  copylen;
-			SRecProtGetTxStr (msg);
-			src				   = msg->buf;
-			difflen += copylen = msg->buflen;
-			while (copylen--)
-				*(dest++) = *(src++);
+			unsigned char Rick_Test=0;
+			if (msg->attribute  == 3 )
+			{
+				SRecProtGetTxStr (msg);
+				src	= &P_InMsgBuffer[0];
+				difflen += copylen = CompAssyCSize ();
+				while (copylen--)
+				//	*(dest++) = *(src++);
+					*(dest++) = ++Rick_Test;
+				msg->buflen= difflen;
+				msg->buf	= outbuffer;
+			}
+			else // Attribute 4 -- Length
+			{
+				*dest 	= CompAssyCSize ();
+				msg->buflen  = 1;
+				msg->buf	= (outbuffer +3);
+			}
+
 		}
-		msg->buf	= outbuffer;
-		msg->buflen = ((RRecPadMode) ? (CompAssyCSize ()) : (difflen));
+         //	msg->buf	= outbuffer;
+		//msg->buflen = ((RRecPadMode) ? (CompAssyCSize ()) : (difflen));
 	}
 	else
 	{
@@ -525,8 +541,8 @@ unsigned char AssyCheck (MSG *msg)
 	}
 	else if (msg->instance == ASSY_PINST) //  Rick_TEST swapped PINST & CINST
 	{
-		if (msg->service != 0x0e)
-			g_status = SERVICE_NOT_SUPP;  // Rick_TEST Bug24 Legacy Module supports R & W To all instances.
+		//if (msg->service != 0x0e)
+		 //	g_status = SERVICE_NOT_SUPP;  // Rick_TEST Bug24 Legacy Module supports R & W To all instances.
 		tmp = 1;
 	}
 	else if (msg->instance == ASSY_CINST)
@@ -1176,19 +1192,25 @@ void *AssemblyFunc (MSG *msg)
 		if (tmp == 0x01)
 			retval = AssyPFunc;
 		else if (tmp == 0x03)
-						return AssyConfigFunc;
+			return AssyConfigFunc;
+
 		else
 			retval = AssyCFunc;
 
 		if ((msg->attribute != 3) && (msg->attribute != 4))  // Rick_TEST needs to do both Data and Len Attributes.
-					g_status = 0x14;
+					g_status = ATTRIBUTE_NOT_SUPP;
 
 		else if (msg->service == 0x10)
 		{
+			if (msg->attribute == 4)
+			{
+				g_status = ATTR_NOT_SETTABLE;
+				return NULL;
+			}
 			if (CheckMsgLen (msg, CompAssyCSize () - TxStrLen, CompAssyCSize ()))
 				return retval;
 		}
-		else if (!CheckMsgLen (msg, 0, 0))
+		else if (!CheckMsgLen (msg, 0, 100))  // Rick_TEST arbitrarialy set to 100/  Not used in Legacy Module.
 			;
 		else
 			return retval;

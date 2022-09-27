@@ -533,13 +533,7 @@ void AppAssemblyObject (void)
 	// To suppress the overlapping memory region warning we will use a loop
 	for (int i = 0; i < msg.buflen; i++)
 		CurrFragObj.buffer[2 + i] = msg.buf[i];
-	/*
-	{//scope
-	unsigned char * dest=&CurrFragObj.buffer[2];
-	while(msg.buflen--)
-		*(dest++)=*(msg.buf++);
-	}
-	*/
+
 }
 
 //**********************************************************************
