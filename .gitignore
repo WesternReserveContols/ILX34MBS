@@ -13,3 +13,6 @@ Release/
 ASC Vault/
 ILX-Debug/
 ../.metadata/
+*.old
+*.bak
+

@@ -124,7 +124,12 @@ unsigned char MaxRxSize = 120;  // Max N bytes of data in Assy
                                  // 10/24/2013 DRC - This now also means Max Byte Count (2*max Int data size of an assembly)
 unsigned char MaxRxBufSize = 0;
 unsigned char FragMsg=FALSE; //Jignesh TODO
+#ifdef Rick_TEST
+static unsigned char input_txid;
+#else
 unsigned char input_txid;
+#endif
+
 unsigned char xmitDataLen;
 
 unsigned char transaction_id =0;
@@ -1201,7 +1206,7 @@ void MB_Rtu_TimedOut(void) //interrupt 1  // using 2
    else { // Slave Mode
       MB_Status = PROCESSING_COMMAND;
    }
-   TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
+   // TriggerCOS();   //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
    ProcessMbMessage=1;  //process the message
 }
 
@@ -1432,8 +1437,8 @@ void Serial_RX_ISR(void)
                   MB_Status = PROCESSING_COMMAND;
                }
                ProcessMbMessage=1;
-               //Jignesh RI=0;
-               TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
+               //Jignesh RI=0;  new_produce_data_avail = 1;
+               // TriggerCOS();  //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
                return;
             }
             else
@@ -1511,7 +1516,7 @@ void Serial_RX_ISR(void)
         MB_Status = PROCESSING_COMMAND;
      }
      ProcessMbMessage=1;
-     TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
+     //TriggerCOS();  //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
    }
    //Jignesh RI=0;
 }
@@ -2939,6 +2944,7 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
    int i,bufcount;
    BYTE errorcode =0;
    unsigned char idx,cnt;
+   static unsigned char RxID_S;     // Rick_TEST this is a trial values used below.
 
    error = error;
    // received a message ok
@@ -3047,12 +3053,14 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
          if ( ++input_txid == 0 ) ++input_txid;
       }
 
-      mainloopassydata[DNI_RX_ID] = input_txid;
+      mainloopassydata[DNI_RX_ID] = ++RxID_S;
+      //  Rick_TEST try incrementing RXIDmainloopassydata[DNI_RX_ID] = input_txid;
       if ( mb_normalized_rcv_buffer_len > MB_STATION_ID ) {
          mainloopassydata[DNI_STATION_ID] =  mb_normalized_rcv_buffer[MB_STATION_ID];
       }
       if ( mb_normalized_rcv_buffer_len > MB_FUNC_LOC ) {
-         mainloopassydata[DNI_FUNC_CODE] =  mb_normalized_rcv_buffer[MB_FUNC_LOC];
+         mainloopassydata[DNI_FUNC_] =  mb_normalized_rcv_buffer[MB_FUNC_LOC];
+         // Rick_TEST This looks out of place  mainloopassydata[DNI_FUNC_CODE] =  mb_normalized_rcv_buffer[MB_FUNC_LOC];
       }
       // Note that address bytes in mb_normalized_rcv_buffer were swapped
       // above so that the normal place holder for the MBC_ADDR_HI_LOC has

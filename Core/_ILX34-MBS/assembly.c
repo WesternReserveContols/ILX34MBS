@@ -84,8 +84,7 @@ void AssyPFunc (MSG *msg)
 	  AssyPMsg.class=0x04;
 	  AssyPMsg.buf=prodbuf;
 
-#if 0
-	unsigned char *prodbuf = msg->buf;
+
 	// add the record counter if we want to
 	msg->buflen = 0;
 	// if(AssyProdRecCounter)
@@ -112,7 +111,7 @@ void AssyPFunc (MSG *msg)
 	AssyPMsg.buflen = 0;
 	RRecProtGetRxStr (&AssyPMsg); // returns a pointer, we need to copy it
 	msg->buflen += AssyPMsg.buflen;
-#endif
+
 }
 // these need to be because they are passed in the msgbuf!
 unsigned char		 new_txrec_num;
@@ -274,7 +273,7 @@ void SRecProtSetTxStrDelimiterMode (MSG *msg);
 void SRecProtSetSwap (MSG *msg);
 void SRecProtSetMode (MSG *msg);
 
-#ifdef Rick_TEST
+// Bug21  Copied following defines from Legacy code
 
 #define SETUP_CONFIG_MESSAGE \
 	ConfigMsg.service=0x0e; \
@@ -314,54 +313,7 @@ void SRecProtSetMode (MSG *msg);
 	*ptr++=buf[2]; \
 	*ptr++=buf[3]; \
 	len=len+4;
-
-
-#else
-//  Jighesh revised code
-
-#define SETUP_CONFIG_MESSAGE  \
-	if (!(len--) || g_status) \
-		return;               \
-	ConfigMsg.service = 0x10; \
-	ConfigMsg.buflen  = 1;    \
-	buf[0]				  = *(ptr++);
-
-#define SETUP_CONFIG_MESSAGE_1 \
-	if(!(len--) || g_status)	\
-	return;						\
-	ConfigMsg.service=0x10;ConfigMsg.buflen=1;	\
-	ConfigMsg.buf[0]=*ptr++;      // ILX-9
-
-#define SETUP_CONFIG_MESSAGE_2 \
-	if(!len || g_status) 		\
-	return; 					\
-	len=len-2;					\
-	ConfigMsg.service=0x10;ConfigMsg.buflen=2;	\
-	ConfigMsg.buf[0]=*ptr++;ConfigMsg.buf[1]=*ptr++;
-
-#define SETUP_CONFIG_MESSAGE_4 \
-	if(!len || g_status)	\
-	return;					\
-	len=len-4;				\
-	ConfigMsg.service=0x10;	\
-	ConfigMsg.buflen=4;		\
-	ConfigMsg.buf[0]=*(ptr++); \
-	ConfigMsg.buf[1]=*(ptr++);	\
-	ConfigMsg.buf[2]=*(ptr++);	\
-	ConfigMsg.buf[3]=*(ptr++);
-
-#define AFTER_CONFIG_MESSAGE_1 \
-	if(g_status)\
-	return; \
-	*(ptr++) = buf[0]; \
-	len++;
-
-#define AFTER_CONFIG_MESSAGE_2 if(g_status)return; \
-	*(ptr++)=buf[0];*(ptr++)=buf[1];len=len+2;
-
-#define AFTER_CONFIG_MESSAGE_4 if(g_status)return;*(ptr++)=buf[0];*(ptr++)=buf[1];*(ptr++)=buf[2];*(ptr++)=buf[3];len=len+4;
-
-#endif
+// end bug 21
 
 
 /**
@@ -571,13 +523,13 @@ unsigned char AssyCheck (MSG *msg)
 	{
 		g_status = SERVICE_NOT_SUPP;
 	}
-	else if (msg->instance == ASSY_CINST)
+	else if (msg->instance == ASSY_PINST) //  Rick_TEST swapped PINST & CINST
 	{
 		if (msg->service != 0x0e)
-			g_status = SERVICE_NOT_SUPP;
+			g_status = SERVICE_NOT_SUPP;  // Rick_TEST Bug24 Legacy Module supports R & W To all instances.
 		tmp = 1;
 	}
-	else if (msg->instance == ASSY_PINST)
+	else if (msg->instance == ASSY_CINST)
 	{
 		tmp = 2;
 	}
@@ -746,6 +698,465 @@ void AssemblyFill (MSG *msg)
 	}
 }
 
+//void AssemblyObject (void)
+void AssemblyInstPC(MSG *msg)
+{
+
+	  uchar Service=msg->service;
+	  uchar Class=msg->class;
+	  uchar Instance=msg->instance;
+	  uchar Attribute=msg->attribute;
+
+
+	  if(Instance == 0) g_status = SERVICE_NOT_SUPP;
+		else if(msg->service == GET_REQ)
+		{
+		  switch(Instance)
+			{
+				case 101:
+					switch(Attribute)
+				  {
+						case 1:
+							g_status = ATTRIBUTE_NOT_SUPPORTED;
+						  break;
+						case 3:
+	          	//xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+			    //    CurrFragObj.numbytes = GetAssySize(Instance)+2;
+	            //FragMsg=FALSE;
+							break;
+						case 4:
+					//		CurrFragObj.buffer[2] = GetAssySize(Instance);
+					//	  CurrFragObj.buffer[3] = 0;
+	            // CurrFragObj.numbytes = 4;
+	            //FragMsg=FALSE;
+							break;
+						default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+					}
+	        break;
+			}
+		}
+}
+#ifdef Rick_TEST_NO
+
+
+	MSG msg;
+	void (*f) (MSG * msg);
+	msg.service	 = CurrFragObj.buffer[INDX_SRVC];
+	msg.class	 = (CurrFragObj.buffer[INDX_CL_HI] << 8) + CurrFragObj.buffer[INDX_CL_LO];
+	msg.instance = CurrFragObj.buffer[INDX_INST];
+	AssemblyFill (&msg);
+	if (msg.attribute)
+	{
+		msg.attribute = CurrFragObj.buffer[INDX_ATTR];
+		msg.buf		  = &CurrFragObj.buffer[INDX_DATA];
+		msg.buflen	  = CurrFragObj.buffindx - INDX_DATA; //?
+	}
+
+
+
+
+
+  // uchar mbuf[50];
+  uchar Service=CurrFragObj.buffer[INDX_SRVC];
+  uchar Class=(CurrFragObj.buffer[INDX_CL_HI]<<8)+CurrFragObj.buffer[INDX_CL_LO];
+  uchar Instance=CurrFragObj.buffer[INDX_INST];
+  uchar Attribute=CurrFragObj.buffer[INDX_ATTR];
+  //MSG xdata * msg;
+
+	msg->buf = &mbuf[0];
+
+	g_status=0;
+
+  if(Instance == 0) g_status = SERVICE_NOT_SUPP;
+	else if(Service == GET_REQ)
+	{
+	  switch(Instance)
+		{
+			case 101:
+				switch(Attribute)
+			  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+					case 3:
+          	//xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            //FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+        break;
+
+			case 102:
+				switch(Attribute)
+			  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+					case 3:
+          	xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+        break;
+
+			case 103:
+				switch(Attribute)
+			  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+					case 3:
+    	  		msg->attribute=Attribute;
+		      	msg->service=Service;
+					  msg->buflen = GetAssySize(Instance);
+            AssyConfigFunc(msg);
+      	    xdata_memcpy(&CurrFragObj.buffer[2],msg->buf,msg->buflen-6);
+		        CurrFragObj.numbytes = msg->buflen-4;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+			  break;
+
+			case 105:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+  				case 3:
+          	xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 106:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+  				case 3:
+          	xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 107:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+  				case 3:
+          	xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 108:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+  				case 3:
+          	xdata_memcpy(&CurrFragObj.buffer[2],AssyInBuf,GetAssySize(Instance));
+		        CurrFragObj.numbytes = GetAssySize(Instance)+2;
+            FragMsg=FALSE;
+						break;
+					case 4:
+						CurrFragObj.buffer[2] = GetAssySize(Instance);
+					  CurrFragObj.buffer[3] = 0;
+            CurrFragObj.numbytes = 4;
+            FragMsg=FALSE;
+						break;
+					default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			default:
+				g_status = OBJECT_DOES_NOT_EXIST;
+  			break;
+		}
+	}
+	else if(Service == SET_REQ)
+	{
+	  switch(Instance)
+		{
+			case 101:
+ 				switch(Attribute)
+  		  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+						break;
+	  			case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+				//		xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+        	//	Assembly_Produce(Prod_Out_Buf,GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+		  			break;
+				  case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+			  }
+			  break;
+
+			case 102:
+ 				switch(Attribute)
+  		  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+						break;
+	  			case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+						xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+        		Assembly_Produce(Prod_Out_Buf,GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+		  			break;
+				  case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+			  }
+			  break;
+
+			case 103:
+ 				switch(Attribute)
+  		  {
+					case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+						break;
+	  			case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+    				msg->buflen=GetAssySize(Instance);
+		    	  msg->attribute=Attribute;
+			      msg->service=Service;
+       	    xdata_memcpy(msg->buf,&CurrFragObj.buffer[INDX_DATA],GetAssySize(Instance));
+            AssyConfigFunc(msg);
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+		  			break;
+				  case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+			  }
+				break;
+
+			case 105:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+          case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+						xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+					  break;
+          case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 106:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+          case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+						xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+        		Assembly_Produce(Prod_Out_Buf,GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+					  break;
+          case 4:
+						g_status = ATTR_NOT_SETTABLE;
+            FragMsg=FALSE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 107:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+          case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+						xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+        		Assembly_Produce(Prod_Out_Buf,GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+					  break;
+          case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			case 108:
+        switch(Attribute)
+			  {
+			    case 1:
+						g_status = ATTRIBUTE_NOT_SUPPORTED;
+					  break;
+          case 3:
+						if(CurrFragObj.buffindx-6 > GetAssySize(Instance))
+						{
+							g_status = TOO_MUCH_DATA;
+							break;
+						}
+						else if(CurrFragObj.buffindx-6 < GetAssySize(Instance))
+						{
+							g_status = NOT_ENOUGH_DATA;
+							break;
+						}
+						xdata_memcpy(AssyOutBuf,&CurrFragObj.buffer[7],GetAssySize(Instance));
+        		Assembly_Produce(Prod_Out_Buf,GetAssySize(Instance));
+            MessageObjectFormatSuccessMessage();
+            FragMsg=FALSE;
+					  break;
+          case 4:
+						g_status = ATTR_NOT_SETTABLE;
+					  break;
+				  default: g_status = ATTRIBUTE_NOT_SUPPORTED;
+				}
+				break;
+
+			default:
+			  g_status = OBJECT_DOES_NOT_EXIST;
+				break;
+		}
+	}
+	else
+	{
+		g_status = SERVICE_NOT_SUPP;
+	}
+  if (g_status)
+  {
+    MessageObjectFormatErrorMessage(g_status, g_addCode);
+    FragMsg=FALSE;
+    return;
+  }
+}
+
+
+#else
 /**
  * @brief AssemblyFunc() Function to check assembly message and execute producer & consumer assembly message.
  *
@@ -754,6 +1165,8 @@ void AssemblyFill (MSG *msg)
  * @return void *		 					- Pointer to message updated buffer
  *
  */
+extern unsigned char TestBuf[];  //Rick_TEST Use teh teste buffer can delete when done.
+
 void *AssemblyFunc (MSG *msg)
 {
 	unsigned char tmp;
@@ -763,12 +1176,12 @@ void *AssemblyFunc (MSG *msg)
 		if (tmp == 0x01)
 			retval = AssyPFunc;
 		else if (tmp == 0x03)
-			return AssyConfigFunc;
+						return AssyConfigFunc;
 		else
 			retval = AssyCFunc;
 
-		if (msg->attribute != 3)
-			g_status = 0x14;
+		if ((msg->attribute != 3) && (msg->attribute != 4))  // Rick_TEST needs to do both Data and Len Attributes.
+					g_status = 0x14;
 
 		else if (msg->service == 0x10)
 		{
@@ -854,3 +1267,6 @@ void AssyGetComboStatus (MSG *msg)
 	msg->buf[0] = RRecStatus | TxSts;
 	msg->buflen = 1;
 }
+
+
+#endif

@@ -546,10 +546,7 @@ void MessageObjectSendPollMessage (void)
 #ifdef FPL
 	if (IOCnxnSize[CSI_P_PROD] > 8) // are we sending fragmented data
 	{
-#ifdef Rick_TEST
-		if (P_OutMsgBufferSize < 9)
-			P_OutMsgBufferSize = 7;
-#endif
+
 
 		// build first fragment
 		// MOdified to allow variable poll sizes
