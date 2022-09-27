@@ -2254,6 +2254,8 @@ void MessageObjectHandleRxPoll (void)
 				   P_InMsgBuffer[ConsFragPtr++] = *(moptr++);
 
 			   */
+
+
 				xdata_memcpy (P_InMsgBuffer, &CANMessageObject[RCV_POLL_MESSAGE_OBJECT].DB0,
 							  ConsFragPtr = ubStatus_size);
 

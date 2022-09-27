@@ -123,18 +123,6 @@ SOFT_RESET:
 	KICK_WDOG ();
 
 
-
-
-#ifdef SIM_CONSUME
-
-	/*
-	// Initialize application objects
-	// Put before DUPMAC to allow offline debugging.
-	*/
-	InitApplicationObjects ();
-	AppObjectInitialized = TRUE;
-#endif
-
 	// wait in while loop to autobaud and for EnableIn to be enabled
 	while (ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud
 		   || (FilterBusEnInPin != 0)) // don't send dupmac request until bus_en goes low

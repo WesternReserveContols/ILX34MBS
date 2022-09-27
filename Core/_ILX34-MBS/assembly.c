@@ -153,22 +153,21 @@ void				 AssyCFunc (MSG *msg)
 			unsigned char *dest = msg->buf;
 			unsigned char *src;
 			unsigned char  copylen;
-			unsigned char Rick_Test=0;
-			if (msg->attribute  == 3 )
+			if (msg->attribute  == 3 )  // Rick_TEST Bug24 Read and write all Assembly attributes
 			{
 				SRecProtGetTxStr (msg);
 				src	= &P_InMsgBuffer[0];
 				difflen += copylen = CompAssyCSize ();
 				while (copylen--)
-				//	*(dest++) = *(src++);
-					*(dest++) = ++Rick_Test;
+					*(dest++) = *(src++);
+
 				msg->buflen= difflen;
 				msg->buf	= outbuffer;
 			}
 			else // Attribute 4 -- Length
 			{
 				*dest 	= CompAssyCSize ();
-				msg->buflen  = 1;
+				msg->buflen  = 2;
 				msg->buf	= (outbuffer +3);
 			}
 
@@ -347,13 +346,19 @@ void AssyConfigFunc (MSG *msg)
 	unsigned char len=msg->buflen;
 	unsigned char buf[2],idx;
 	ConfigMsg.buf = &buf[0];
-	if(msg->attribute!=3)
+	if((msg->attribute!=3) && (msg->attribute!=4))
 	{
-		 g_status=0x14;
+		g_status=0x14;
 		 return;
 	}
 	// get the record number
 	g_status=0;
+	  if((msg->service==0x0e) && (msg->attribute==4))//  Rick_TEST Add the Get Attr 4
+	  {
+		  *(msg->buf) = 0x22;  //Rick_TEST this needs to be defined in a header file.
+		  msg->buflen=2;
+		  return;
+	  }
 	  if(msg->service==0x0e)//get
 	  {
 		  len=6;
