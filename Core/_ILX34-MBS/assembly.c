@@ -130,12 +130,31 @@ unsigned char		 CompAssyCSize (void);
  */
 void				 AssyCFunc (MSG *msg)
 {
+	unsigned char AssyLength;
+	switch(msg->instance)
+	{
+	case 102:
+		 AssyLength=26;
+		 break;
+	case 106:
+		 AssyLength=58;
+		 break;
+	case 108:
+		AssyLength=82;
+		break;
+	default:
+		break;
+	}
+
 	// get the record number
 	if (msg->service == 0x0e)
 	{
 		// g_status=0x18;
 		unsigned char *outbuffer = msg->buf;
-		unsigned char  difflen	 = 2;
+		unsigned char  difflen	 = 0;  // = 2;
+
+		/*   Rick_TEST  Left over from 1734ASC can be deleted.
+
 		*(msg->buf++)			 = new_rxrec_num;
 		*(msg->buf++)			 = new_txrec_num;
 		if ((type == SHORT_STRING) || (type == ARRAY))
@@ -148,6 +167,8 @@ void				 AssyCFunc (MSG *msg)
 			*(msg->buf++) = 0;
 			difflen++;
 		}
+
+		*/
 		// replaces the msg->buf pointer.
 		{
 			unsigned char *dest = msg->buf;
@@ -155,9 +176,10 @@ void				 AssyCFunc (MSG *msg)
 			unsigned char  copylen;
 			if (msg->attribute  == 3 )  // Rick_TEST Bug24 Read and write all Assembly attributes
 			{
-				SRecProtGetTxStr (msg);
+				//  Rick_TEST SRecProtGetTxStr (msg);
 				src	= &P_InMsgBuffer[0];
-				difflen += copylen = CompAssyCSize ();
+				difflen += copylen = AssyLength;
+				// difflen += copylen = CompAssyCSize ();
 				while (copylen--)
 					*(dest++) = *(src++);
 
@@ -166,9 +188,9 @@ void				 AssyCFunc (MSG *msg)
 			}
 			else // Attribute 4 -- Length
 			{
-				*dest 	= CompAssyCSize ();
+				*dest 	= AssyLength;
 				msg->buflen  = 2;
-				msg->buf	= (outbuffer +3);
+				msg->buf	= dest;
 			}
 
 		}
@@ -439,6 +461,12 @@ void AssyConfigFunc (MSG *msg)
 	  }
 	  else if(msg->service==0x10)//set
 	  {
+			if((msg->attribute==4))
+			{
+				g_status=0xe;
+				 return;
+			}
+
 		    if(msg->buflen>34)
 		    {
 		      g_status=0x15;
@@ -544,6 +572,26 @@ unsigned char AssyCheck (MSG *msg)
 	{
 		g_status = SERVICE_NOT_SUPP;
 	}
+	else
+		switch(msg->instance)   //Rick_TEST  add the other instances to selection.
+		{
+		case 101:     //  Produce Assemblies -- PLC Input
+		case 105:
+		case 107:
+			tmp = 1;
+			break;
+		case 102:     //  Consume Assemblies -- PLC Output
+		case 106:
+		case 108:
+			tmp = 2;
+			break;
+		case 103:
+			tmp = 3;
+			break;
+		default:
+			g_status = OBJECT_DOES_NOT_EXIST;
+		}
+	/*
 	else if (msg->instance == ASSY_PINST) //  Rick_TEST swapped PINST & CINST
 	{
 		//if (msg->service != 0x0e)
@@ -561,7 +609,7 @@ unsigned char AssyCheck (MSG *msg)
 	else
 	{
 		g_status = OBJECT_DOES_NOT_EXIST;
-	}
+	}  */
 	if (g_status)
 		return 0;
 	return tmp;
