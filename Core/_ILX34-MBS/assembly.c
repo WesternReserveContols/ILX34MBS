@@ -78,6 +78,23 @@ extern unsigned char MaxRxSize;
  */
 void AssyPFunc (MSG *msg)
 {
+	// Produce data for PLC Input
+	unsigned char AssyLength;
+	switch(msg->instance)
+	{
+	case 101:
+		 AssyLength=30;
+		 break;
+	case 105:
+		 AssyLength=62;
+		 break;
+	case 107:
+		AssyLength=86;
+		break;
+	default:
+		break;
+	}
+
 	  unsigned char * prodbuf=msg->buf;
 
 	  *(prodbuf)= 0;
@@ -128,8 +145,10 @@ unsigned char		 CompAssyCSize (void);
  * @return void 					- None
  *
  */
-void				 AssyCFunc (MSG *msg)
+void AssyCFunc (MSG *msg)
 {
+
+	// Consume data From PLC Output
 	unsigned char AssyLength;
 	switch(msg->instance)
 	{
@@ -146,29 +165,12 @@ void				 AssyCFunc (MSG *msg)
 		break;
 	}
 
-	// get the record number
 	if (msg->service == 0x0e)
 	{
-		// g_status=0x18;
+
 		unsigned char *outbuffer = msg->buf;
 		unsigned char  difflen	 = 0;  // = 2;
 
-		/*   Rick_TEST  Left over from 1734ASC can be deleted.
-
-		*(msg->buf++)			 = new_rxrec_num;
-		*(msg->buf++)			 = new_txrec_num;
-		if ((type == SHORT_STRING) || (type == ARRAY))
-		{
-			*(msg->buf++) = 0;
-			difflen++;
-		}
-		if (type == ARRAY)
-		{
-			*(msg->buf++) = 0;
-			difflen++;
-		}
-
-		*/
 		// replaces the msg->buf pointer.
 		{
 			unsigned char *dest = msg->buf;
@@ -179,7 +181,6 @@ void				 AssyCFunc (MSG *msg)
 				//  Rick_TEST SRecProtGetTxStr (msg);
 				src	= &P_InMsgBuffer[0];
 				difflen += copylen = AssyLength;
-				// difflen += copylen = CompAssyCSize ();
 				while (copylen--)
 					*(dest++) = *(src++);
 
@@ -189,16 +190,27 @@ void				 AssyCFunc (MSG *msg)
 			else // Attribute 4 -- Length
 			{
 				*dest 	= AssyLength;
+				*(dest+1) = 0;
 				msg->buflen  = 2;
 				msg->buf	= dest;
 			}
 
 		}
-         //	msg->buf	= outbuffer;
-		//msg->buflen = ((RRecPadMode) ? (CompAssyCSize ()) : (difflen));
 	}
 	else
 	{
+
+		if(!DnCheckAttrLen(msg,AssyLength,AssyLength))
+			return;
+
+		if (msg->attribute  == 4 )  // Rick_TEST
+		{
+			g_status = ATTR_NOT_SETTABLE;
+			return;
+		}
+
+		/*  This is all carry over 1734ASC code that is not required
+
 		if (AssyCFlowControlFlags && msg->buflen)
 		{
 			// I dont know what this will look like yet.
@@ -259,6 +271,13 @@ void				 AssyCFunc (MSG *msg)
 			msg->buf		 = &new_rxrec_num;
 			RRecProtSetRxRec (msg);
 		}
+		*/
+
+		// Rick_TEST Do you want to write this buffer to the MBPort?
+		//MBM_QueMbTxMsg(msg->buf);   // Rick_TEST bug31
+		msg->buflen	 = 0;
+		*(msg->buf) = 0x90;
+		*(msg->buf) = 01;
 	}
 }
 
@@ -378,6 +397,7 @@ void AssyConfigFunc (MSG *msg)
 	  if((msg->service==0x0e) && (msg->attribute==4))//  Rick_TEST Add the Get Attr 4
 	  {
 		  *(msg->buf) = 0x22;  //Rick_TEST this needs to be defined in a header file.
+		  *(msg->buf+1) = 0;
 		  msg->buflen=2;
 		  return;
 	  }
@@ -461,6 +481,9 @@ void AssyConfigFunc (MSG *msg)
 	  }
 	  else if(msg->service==0x10)//set
 	  {
+			// Rick_TEST Bug 32 make sure data is correct write size
+			if(!DnCheckAttrLen(msg,34,34))return;
+
 			if((msg->attribute==4))
 			{
 				g_status=0xe;
@@ -1245,26 +1268,21 @@ void *AssemblyFunc (MSG *msg)
 		if (tmp == 0x01)
 			retval = AssyPFunc;
 		else if (tmp == 0x03)
-			return AssyConfigFunc;
-
+		{
+			retval =  AssyConfigFunc;
+		}
 		else
 			retval = AssyCFunc;
 
 		if ((msg->attribute != 3) && (msg->attribute != 4))  // Rick_TEST needs to do both Data and Len Attributes.
 					g_status = ATTRIBUTE_NOT_SUPP;
 
-		else if (msg->service == 0x10)
-		{
-			if (msg->attribute == 4)
-			{
+		else if ((msg->service == 0x10) && (msg->attribute == 4))
 				g_status = ATTR_NOT_SETTABLE;
-				return NULL;
-			}
-			if (CheckMsgLen (msg, CompAssyCSize () - TxStrLen, CompAssyCSize ()))
+/* Bug32  the size chaeck is moved to the AssyFunc() (CheckMsgLen (msg, CompAssyCSize () - TxStrLen, CompAssyCSize ()))
 				return retval;
-		}
 		else if (!CheckMsgLen (msg, 0, 100))  // Rick_TEST arbitrarialy set to 100/  Not used in Legacy Module.
-			;
+			; */
 		else
 			return retval;
 	}

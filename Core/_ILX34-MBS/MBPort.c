@@ -308,7 +308,7 @@ void InitSerialIO(void)
 	SH_Set_Parameters ();
 	SH_Init ();
 
-	TriggerCOS(); //Bug5  TODO Jignesh to avoid zero to PLC data
+//Rick_TEST Bug27 this send a explicit produce before connection is made probabley bad	TriggerCOS(); //Bug5  TODO Jignesh to avoid zero to PLC data
 }
 
 /**
@@ -1795,7 +1795,7 @@ TESTSKIP:
       else { // MB_SLAVEMODE
          MB_Status = PROCESSING_RESPONSE;
       }
-      TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
+      //TriggerCOS(); //Bug5 Bug30 TODO Jignesh to avoid zerto PLC
       // reset MB_Exception to 0 every time a message comes in from DN
       MB_Exception = 0;
 
