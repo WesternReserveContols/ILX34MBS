@@ -79,7 +79,10 @@ extern unsigned char MaxRxSize;
 void AssyPFunc (MSG *msg)
 {
 	// Produce data for PLC Input
+	// Rick_TEST Bug33 Added this section to perform GET and SET
+	// If Implicit Poll message, then Class is not one of 101,105 or 106
 	unsigned char AssyLength;
+	unsigned char IsExplicit = TRUE;
 	switch(msg->instance)
 	{
 	case 101:
@@ -92,44 +95,82 @@ void AssyPFunc (MSG *msg)
 		AssyLength=86;
 		break;
 	default:
-		break;
+		IsExplicit = FALSE;
+		break;  // Stops here on Implicit Poll Reply
 	}
 
 	  unsigned char * prodbuf=msg->buf;
 
-	  *(prodbuf)= 0;
-	  *(prodbuf+1)= RRecStatus|TxSts|Ascii.Status;
-	  //produce the data
-	  AssyPMsg.class=0x04;
-	  AssyPMsg.buf=prodbuf;
+     if (IsExplicit)
+     {
+     	if (msg->service = 0xe)  //Service is GET
+     	{
+     		if (msg->attribute  == 3 )  // Rick_TEST
+     		{
+     			g_status = ATTR_NOT_SETTABLE;
+     			return;
+     		}
+
+     		if (msg->attribute  == 4 )  // Rick_TEST
+     		{
+     			g_status = ATTR_NOT_SETTABLE;
+     			return;
+     		}
+     	}
+
+     	else // Service is SET
+     	{
+     		if (msg->attribute  == 3 )  // Rick_TEST
+     		{
+     			g_status = ATTR_NOT_SETTABLE;
+     			return;
+     		}
+
+     		if (msg->attribute  == 4 )  // Rick_TEST
+     		{
+     			g_status = ATTR_NOT_SETTABLE;
+     			return;
+     		}
+     	}
+     }//  end of Explicit
 
 
-	// add the record counter if we want to
-	msg->buflen = 0;
-	// if(AssyProdRecCounter)
-	*(prodbuf++) = RRecNum;
-	msg->buflen++;
+	else // If Implicit Poll Reply  This was the orriginal code
+     {
+    	 *(prodbuf)= 0;
+    	 *(prodbuf+1)= RRecStatus|TxSts|Ascii.Status;
+    	 //produce the data
+    	 AssyPMsg.class=0x04;
+    	 AssyPMsg.buf=prodbuf;
 
-	*(prodbuf++) = RRecStatus | TxSts | Ascii.Status;
 
-	msg->buflen++;
-	// pad for logix complient crap!
-	if ((RRecRxStrType == SHORT_STRING) || (RRecRxStrType == ARRAY))
-	{
-		*(prodbuf++) = 0;
-		msg->buflen++;
-	}
-	if (RRecRxStrType == ARRAY)
-	{
-		*(prodbuf++) = 0;
-		msg->buflen++;
-	}
-	// produce the data
-	AssyPMsg.class	= 0x04;
-	AssyPMsg.buf	= prodbuf;
-	AssyPMsg.buflen = 0;
-	RRecProtGetRxStr (&AssyPMsg); // returns a pointer, we need to copy it
-	msg->buflen += AssyPMsg.buflen;
+    	 // add the record counter if we want to
+    	 msg->buflen = 0;
+    	 // if(AssyProdRecCounter)
+    	 *(prodbuf++) = RRecNum;
+    	 msg->buflen++;
+
+    	 *(prodbuf++) = RRecStatus | TxSts | Ascii.Status;
+
+    	 msg->buflen++;
+    	 // pad for logix complient crap!
+    	 if ((RRecRxStrType == SHORT_STRING) || (RRecRxStrType == ARRAY))
+    	 {
+    		 *(prodbuf++) = 0;
+    		 msg->buflen++;
+    	 }
+    	 if (RRecRxStrType == ARRAY)
+    	 {
+    		 *(prodbuf++) = 0;
+    		 msg->buflen++;
+    	 }
+    	 // produce the data
+    	 AssyPMsg.class	= 0x04;
+    	 AssyPMsg.buf	= prodbuf;
+    	 AssyPMsg.buflen = 0;
+    	 RRecProtGetRxStr (&AssyPMsg); // returns a pointer, we need to copy it
+    	 msg->buflen += AssyPMsg.buflen;
+     }
 
 }
 // these need to be because they are passed in the msgbuf!

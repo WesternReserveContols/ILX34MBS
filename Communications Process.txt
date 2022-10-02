@@ -1,0 +1,126 @@
+Message is receive with type XX
+
+// PLC OUTPUT is Consumed:   (102,106,108) 
+// 1  when triggered by CAN receive process and sent to MBPort for TX 
+// 2. Explicit SET to AssyCFunc and ??? Sent to MBPort for TX  
+// 3. Explicit GET to AssyCFunc returns the contents of Arrt3(ie. P_InMsgBuffer)  
+
+// for implicit OUTPUT PLX messages P_InMsgBuffer contains the incoming data.
+				cp_dispatch_message (uint8_t object)
+					case RCV_POLL_MESSAGE_OBJECT:
+					A.	MessageObjectHandleRxPoll()
+dn_msgobj.2286			if (consume_poll_data)
+							produce_data = AppObjectPollConsume (/*ConsFragPtr*/);
+								{
+int232.458						msg.buf	   = &P_InMsgBuffer[0];
+								MBM_QueMbTxMsg(&P_InMsgBuffer[0]);  // Send comsumed data to MB Port
+								}  
+							if (DeviceNetObjectRAM.AllocedCnxns & POLLED)
+								if (produce_data)  //  if consume_poll_data; or 
+									MessageObjectSendPollMessage()	
+									if(polldatachanged)
+										AppObjectFillPollData()
+									CANMessageObject(XMIT_COMM_FLTD_MSG_OBJ)  // Send the first Fragment
+
+						
+// For PLC INPUT Produced:  (101, 105, 107)
+//  A.  Produce_Data = TRUE (Implicit)
+//  B.  Explicit GET AssyPFunc()  returns the contents of attr3  (???mainassyloopdata)
+
+					1.	// Received MB Message
+						MB_Rx_Interrupt(void) 
+							Serial_RX_ISR()
+							    // Build mb_normalized_rcv_buffer from character stream.
+								ProcessMbMessage=1;	// at end of message.	
+							
+						Main Loop
+
+
+					2.	// If New MB Message is received, then process data
+						main_port_serial ()
+							if(ProcessMbMessage)
+								if Master
+									MB_LoadProduceBuffer
+										copy mb_normalized_rcv_buffer into mainassyloopdata
+										 TriggerCOS();  (new_produce_data_avail = 1)
+										
+								else  // Slave	
+									MB_LoadProduceBuffer
+										copy mb_normalized_rcv_buffer into mainassyloopdata
+										 TriggerCOS();
+						
+					3.  // If new_produce_data_avail then set build msg object and set semephore to produce data
+						if (DupMac=OK)  // ie Online
+							AppObjectMonitorIO()
+								if (new_produce_data_avail)  
+									copy mainloopassydata to msg->bug
+									AssyPFunc (&msg);
+									size_of_mainloopassydata = msg.buflen;
+									polldatachanged	= 1;
+									cosdatachanged = 1;
+									
+								
+					// The CAN Consume Poll causes produce the above Produce Assy Data 		
+					A.  MessageObjectHandleRxPoll  // Same as above, duplicated here for continunity
+							if (consume_poll_data)
+								produce_data=1
+								--- Process Consume Data--
+							if (produce_data) 
+								MessageObjectSendPollMessage()	
+								if(polldatachanged)
+									AppObjectFillPollData()
+								CANMessageObject(XMIT_COMM_FLTD_MSG_OBJ)  // Send the first Fragment
+
+
+Explicit GET/SET
+				cp_dispatch_message (uint8_t object)
+					case RCV_EXPLICIT_MESSAGE_OBJECT:
+dn_msgobj.2394			MessageObjectHandleRxExplicitDupMac()
+							MessageObjectAddInQ()
+								copies CAN data to InBuffer[]
+								InPktsQd++
+				Main LOOP
+				MessageObjectCheckPktQs()
+					MessageObjectCheckInPktQ()
+						if (InPktsQd)
+							copy the lowest InBuf[0] to CurrMessageObjectPkt
+							shift all remaining InBuf[InPktsQd] down to InBuf[InPktsQd-1]
+							InPktsQd--
+							MessageObjectProcessInPkt()
+								Check message type
+								if(Online)
+									MessageObjectConsume ()
+										switch (CurrFragObj.buffer[INDX_CL_LO])// Class
+										Case: Assembly
+											AppAssemblyObject()
+													if (!g_status)
+														f = AssemblyFunc (&msg); // Checks the Assembly Instance
+													if (!g_status)
+														f (&msg);          // one of AssyPFunc; AssyCFunc; or AssyConfigFunc
+													if (g_status)
+														MessageObjectFormatErrorMessage (g_status, g_addCode);
+											break;
+										MessageObjectAddOutQ ()
+
+CAN Message Objects
+#define NUM_MESSAGE_OBJECTS 15
+Ref:Dnet Spec: CIP Vol 3 page 3-27
+
+// Slave’s I/O Multicast Poll Response Message
+// Master’s I/O Multicast Poll Command Message 1
+// Master’s Change of State or Cyclic Acknowledge Message  2
+#define XMIT_COMM_FLTD_MSG_OBJ 3
+#define RCV_COMM_FLTD_MSG_OBJ  4
+
+#define XMIT_COS_MESSAGE_OBJECT		 5
+#define XMIT_STROBE_MESSAGE_OBJECT	 6
+#define XMIT_POLL_MESSAGE_OBJECT	 7
+#define XMIT_EXPLICIT_MESSAGE_OBJECT 8
+
+#define RCV_EXPLICIT_MESSAGE_OBJECT 9
+#define RCV_DUP_MAC_MESSAGE_OBJECT	10
+#define RCV_COS_ACK_MESSAGE_OBJECT	11
+#define RCV_UNCNNCTD_MESSAGE_OBJECT 12 // group 2 or group 3
+#define RCV_STROBE_MESSAGE_OBJECT	13 // be careful changing this (was 14)
+#define RCV_POLL_MESSAGE_OBJECT		14
+//Duplicate MAC ID Check Messages		15	

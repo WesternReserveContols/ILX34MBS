@@ -214,7 +214,9 @@ void		  TriggerCOS (void)
 
 void AppObjectMonitorIO (void) //?
 {
-
+unsigned char Rick_Test = 0;
+	//if ((mainloopassydata[0] == 0) && (new_produce_data_avail))
+	//	Rick_Test= 1;   // Rick_TEST
 	TimerObjectSvcTimer ();
 
 //	SHWMain ();
@@ -234,7 +236,7 @@ void AppObjectMonitorIO (void) //?
 		msg.buf				   = mainloopassydata;
 		msg.buflen = CompAssyPSize ();    // Rick_TEST fix bug 19  msg. buffer set to 177 bytes by default, now set to P_ASSY_SIZE
 
-		AssyPFunc (&msg);
+		//AssyPFunc (&msg);
 		size_of_mainloopassydata = msg.buflen;
 		polldatachanged			 = 1;
 		cosdatachanged			 = 1;
