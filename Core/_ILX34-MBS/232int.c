@@ -214,20 +214,9 @@ void		  TriggerCOS (void)
 
 void AppObjectMonitorIO (void) //?
 {
-unsigned char Rick_Test = 0;
-	//if ((mainloopassydata[0] == 0) && (new_produce_data_avail))
-	//	Rick_Test= 1;   // Rick_TEST
 	TimerObjectSvcTimer ();
 
-//	SHWMain ();
-
-//	TimerObjectSvcTimer ();
-
-//	RRecMain ();
-
-//	TimerObjectSvcTimer ();
-
-	// assy main proc
+	// Process Produce Assy
 	if (new_produce_data_avail)
 	{ // scope
 		MSG msg;
@@ -236,8 +225,9 @@ unsigned char Rick_Test = 0;
 		msg.buf				   = mainloopassydata;
 		msg.buflen = CompAssyPSize ();    // Rick_TEST fix bug 19  msg. buffer set to 177 bytes by default, now set to P_ASSY_SIZE
 
-		//AssyPFunc (&msg);
+		//AssyPFunc (&msg);   // Rick_TEST Removed was leftover from 1734ASC
 		size_of_mainloopassydata = msg.buflen;
+		// Set Semaphore to send datat via CAN
 		polldatachanged			 = 1;
 		cosdatachanged			 = 1;
 		// Trigger the COS

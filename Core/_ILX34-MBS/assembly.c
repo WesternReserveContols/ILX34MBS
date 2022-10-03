@@ -16,6 +16,7 @@
 #include <string.h>
 #include "mbport.h"
 #include "dn_cnobj.h"
+#include "memopt.h"
 
 extern uchar P_InMsgBuffer[]; // Rick_TEST This shoudl be include in the App_Objects.h
 
@@ -81,6 +82,7 @@ void AssyPFunc (MSG *msg)
 	// Produce data for PLC Input
 	// Rick_TEST Bug33 Added this section to perform GET and SET
 	// If Implicit Poll message, then Class is not one of 101,105 or 106
+	extern unsigned char mainloopassydata[BYTES_OF_SER_DATA+6];  // this should be in a header file
 	unsigned char AssyLength;
 	unsigned char IsExplicit = TRUE;
 	switch(msg->instance)
@@ -103,26 +105,45 @@ void AssyPFunc (MSG *msg)
 
      if (IsExplicit)
      {
-     	if (msg->service = 0xe)  //Service is GET
+     	if (msg->service == 0xe)  //Service is GET
      	{
      		if (msg->attribute  == 3 )  // Rick_TEST
      		{
-     			g_status = ATTR_NOT_SETTABLE;
+     			// bug33 emulation would go here
+     			unsigned char *dest =msg->buf;
+     			unsigned char *src = &mainloopassydata;
+     			xdata_memcpy (dest, src, AssyLength);
+     			msg->buflen = AssyLength;
      			return;
      		}
 
      		if (msg->attribute  == 4 )  // Rick_TEST
      		{
-     			g_status = ATTR_NOT_SETTABLE;
+     			*(msg->buf) = AssyLength;
+     			*(msg->buf+ 1) = 0;
+     			msg->buflen = 2;
      			return;
      		}
      	}
 
      	else // Service is SET
      	{
+
+    		if(!DnCheckAttrLen(msg,AssyLength,AssyLength))
+    			return;
+
      		if (msg->attribute  == 3 )  // Rick_TEST
      		{
-     			g_status = ATTR_NOT_SETTABLE;
+     			// bug33 emulation would go here
+     			unsigned char *dest = &mainloopassydata;
+     			unsigned char *src = msg->buf;
+     			unsigned char len = msg->buflen;
+     			xdata_memcpy (dest, src, len);
+     			if (AssyLength > len)
+     				memset ((dest+len), 0, (AssyLength- len));
+     			msg->buflen	 = 0;
+     			*(msg->buf) = 0x90;
+     			*(msg->buf) = 01;
      			return;
      		}
 
