@@ -124,11 +124,9 @@ unsigned char MaxRxSize = 120;  // Max N bytes of data in Assy
                                  // 10/24/2013 DRC - This now also means Max Byte Count (2*max Int data size of an assembly)
 unsigned char MaxRxBufSize = 0;
 unsigned char FragMsg=FALSE; //Jignesh TODO
-#ifdef Rick_TEST
-static unsigned char input_txid;
-#else
-unsigned char input_txid;
-#endif
+
+static unsigned char input_txid;  // Rick_TEST changed to Static
+
 
 unsigned char xmitDataLen;
 
