@@ -1,0 +1,24 @@
+Date Code         (ON LABEL)
+Date Code           (ON LABEL)
+
+
+"Catalog Number||Catalog Number Series||RA Material Number/PN||Product Serial Number/Warranty Identification Number(WIN)||Manufacturing Date Code||CIP Serial/ASA ID(Internal Network Serial Number)||MAC ID Address 1||MAC ID Address 2||SAP Vendor ID||Manufacturing Location||RA Purchase Order
+CAT1234||1||PN-1234||PSN123||44352||CIP112||12-23-45-56-78||12-23-45-56-82||SAP12345||USA||PO1234
+CAT1235||2||PN-1235||PSH124||44353||CIP113||12-23-45-56-70||12-23-45-56-72||SAP12346||USA||PO1235
+CAT1234||3||PN-1234||PSN123||44352||CIP112||12-23-45-56-78||12-23-45-56-82||SAP12345||USA||PO1234
+CAT1235||4||PN-1235||PSH124||44353||CIP113||12-23-45-56-70||12-23-45-56-72||SAP12346||USA||PO1235
+CAT1234||3||PN-1234||PSN123||44352||CIP112||12-23-45-56-78||12-23-45-56-82||SAP12345||USA||PO1234
+CAT1235||4||PN-1235||PSH124||44353||CIP113||12-23-45-56-70||12-23-45-56-72||SAP12346||USA||PO1235
+Look up table ||||||Product Check List||||||Not used||||Look up table||||Manual"
+
+
+Catalog Number||Catalog Number Series||RA Material Number/PN||Product Serial Number/Warranty Identification Number(WIN)||Manufacturing Date Code||CIP Serial/ASA ID(Internal Network Serial Number)||MAC ID Address 1||MAC ID Address 2||SAP Vendor ID||Manufacturing Location||RA Purchase Order
+Catalog Number||Catalog Number Series||RA Material Number/PN||Product Serial Number/Warranty Identification Number(WIN)||Manufacturing Date Code||CIP Serial/ASA ID(Internal Network Serial Number)||MAC ID Address 1||MAC ID Address 2||SAP Vendor ID||Manufacturing Location||RA Purchase Order
+Catalog Number||Catalog Number Series||RA Material Number/PN||Product Serial Number/Warranty Identification Number(WIN)||Manufacturing Date Code||CIP Serial/ASA ID(Internal Network Serial Number)||MAC ID Address 1||MAC ID Address 2||SAP Vendor ID||Manufacturing Location||RA Purchase Order
+
+
+I am having trouble with the Authenticity DEV API with the code that was working last Spring.  I discovered there were some API changes made earlier that spring for which I must have missed the communication/notification of that change.  Last I knew in April, the PROD API was not yet stable???  This time both my Postman file from 4/14/2022 and my Excel VBA macro that were working, no longer work.  The Postman seem to refuse to accept my data header format even though I copied the format given directly form the reply message.  I also found if a quotation mark (“)  is prepended, I get a different message in the reply.  My Excel VBA seem to be complaining about client credentials even though these credentials worked before and are the same as used in Postman.
+
+Please see the attached Excel workbook for the details of these issues.  I did this in Excel so you could easily copy my strings for your analysis convenience.
+
+Have there been any changes to the API since Last April that I may not be aware of?  Since the DEV API was not working to verify my data, I did not try the PROD API. 

@@ -207,14 +207,14 @@ const unsigned char id_ILX_232_name_mem[] = "\x0C""ILX34-MBS232";
 const unsigned int	id_ILX_232_product_type_mem   = 12;
 const unsigned int	id_ILX_232_product_code_mem   = 4001;
 const unsigned char id_ILX_232_major_revision_mem = 1;
-const unsigned char id_ILX_232_minor_revision_mem = 15;
+const unsigned char id_ILX_232_minor_revision_mem = 16;
 const unsigned int	id_ILX_232_vendor_id_mem	   = 309;
 
 const unsigned char id_ILX_485_name_mem[] = "\x0C""ILX34-MBS485";
 const unsigned int	id_ILX_485_product_type_mem   = 12;
 const unsigned int	id_ILX_485_product_code_mem   = 4002;
 const unsigned char id_ILX_485_major_revision_mem = 1;
-const unsigned char id_ILX_485_minor_revision_mem = 15;
+const unsigned char id_ILX_485_minor_revision_mem = 16;
 const unsigned int	id_ILX_485_vendor_id_mem	   = 309;
 /*
 	Sets 1734 applications module ID variables

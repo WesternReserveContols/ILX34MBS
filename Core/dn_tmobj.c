@@ -9,6 +9,7 @@
 #include <dn_tmobj.h>
 #include <dn_uiobj.h>
 #include <enbl_obj.h>
+#include <dn_idobj.h>
 
 #include "serial_config.h"
 
@@ -17,6 +18,7 @@
 extern void UIObjectLEDRefresh (void);
 
 extern uchar AppObjectInitialized;
+extern char DeviceResetSemaphore;
 
 static unsigned int 	TimerObjectTick;
 static unsigned char TimerTicks; // inc'ed in ISR, dec'ed in foreground
@@ -159,6 +161,32 @@ unsigned char TimerObjectSvcTimer (void)
 		return (0);
 
 	uptime++;
+
+
+#ifdef Rick_TEST
+	/*
+	// Delay Reset  Rick_TEST fix bug45
+	*/
+	int timer_Reset_1 = 0;
+	timer_Reset_1 = (TimerObjectTick / 8);
+	TimerObjectTick = (TimerObjectTick % 8);
+
+	if ((!TimerObjectTick || timer_Reset_1) && (DeviceResetSemaphore!= 0))
+	{
+		if (DeviceResetSemaphore == COLD_BOOT)
+		{
+			MessageObjectRAM.bCommParamChange = TRUE;
+			DeviceNetObjectRAM.bAutoBaud=ABAUD_ENABLED;    // Rick_TEST Bug35
+		}
+
+		else if (DeviceResetSemaphore == OUTOFBOX_RESET)
+		{
+			InitFactoryDefaults ();
+			MessageObjectRAM.bCommParamChange = TRUE;
+		}
+		DeviceResetSemaphore = 0;
+	}
+#endif
 
 
 

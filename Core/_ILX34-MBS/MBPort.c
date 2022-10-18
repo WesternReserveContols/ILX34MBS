@@ -269,6 +269,8 @@ void InitSerialIO(void)
    /* set for 1 sec */
    mb_timeoutcounter = ModbusConfig.timeout;
    mb_messagesent = 0;
+   transaction_id =0;  //Rick_TEST added Bug43
+
 
 
    Ascii.DataBits = MBport_DataParity[Ascii.Framing].DataBits;
@@ -1797,6 +1799,7 @@ TESTSKIP:
       // reset MB_Exception to 0 every time a message comes in from DN
       MB_Exception = 0;
 
+
       if ( MBLoad( &P_InBuf[DNO_STATION_ID] ) ) //load the modbus buffer system, verify the buffer
       {
          StartMbSend();
@@ -1814,7 +1817,7 @@ TESTSKIP:
       }
 
       transaction_id = P_InBuf[DNO_TX_ID];
-      TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
+     // Rick_TEST Bug43 TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
    }
    return;
 }
@@ -2962,6 +2965,11 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
         case 3:
         case 4:
         idx = 0;
+#ifdef Rick_TEST
+        if(MB_Status!=1)
+        	MB_Status = 1;
+#endif
+
         mainloopassydata[idx++] = MB_Status;
         mainloopassydata[idx++] = errorcode;
         if ( ( !error ) || ( error == FLOAT_WORD_SWAP_UNEVEN_WORD_COUNT_ERROR) ) {

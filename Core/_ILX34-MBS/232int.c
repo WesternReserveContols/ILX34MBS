@@ -332,19 +332,13 @@ void AppObjectFillPollData (void)
 	//
 	if (polldatachanged && assymainprocnotbusy)
 	{
-		/*
-		unsigned char * src=mainloopassydata;
-		unsigned char * dest=P_OutMsgBuffer;
-		unsigned char len=P_OutMsgBufferSize=size_of_mainloopassydata;
-		while(len--) *(dest++)=*(src++);
-		*/
-		mainloopassydata[0]=MB_Status;
-		// copy it
+
+		mainloopassydata[0]=MB_Status;  // Rick_TEST This looks super redundant.
 		xdata_memcpy (P_OutMsgBuffer, mainloopassydata, P_OutMsgBufferSize = size_of_mainloopassydata);
 		polldatachanged = 0;
 	}
 	// stuff the buffer if anything needs to be done here
-	P_OutMsgBuffer[0] = MB_Status;    // Rick_TEST Addes these two lines from Legacy code 9/2/2022
+	P_OutMsgBuffer[0] = MB_Status;    // Rick_TEST Added these two lines from Legacy code 9/2/2022
 	P_OutMsgBuffer[1] = MB_Exception;
 
 }

@@ -22,6 +22,7 @@
 #define SECRET_SET_CCV		   0xD5 // set CCV
 
 IdentityObjectStructure IdentityObjectRAM;
+char DeviceResetSemaphore =0; // Rick_TEST fix bug45
 
 void IdentityObjectSecretSet ();
 void DebugIDObject ();
@@ -231,6 +232,7 @@ void IdentityObjectInit ()
 
 void IdentityObject ()
 {
+
 	if (0xEE == CurrFragObj.buffer[INDX_INST])
 		DebugIDObject ();
 	else
@@ -274,7 +276,23 @@ void IdentityObject ()
 		// For the out of box reset the attributes are reset to the factory defaults before restarting.
 		// The default case is Restart.
 		case RESET_REQ:
+#ifdef Rick_TEST
+			/*
+			// Delay Reset  Rick_TEST fix bug45
+			*/
 
+			if ((CurrFragObj.buffer[INDX_ATTR] == RESTART) || ((CurrFragObj.buffindx) == INDX_ATTR))
+			{
+				DeviceResetSemaphore = COLD_BOOT;
+			}
+
+			else if (CurrFragObj.buffer[INDX_ATTR] == OUTOFBOX_RESET)
+			{
+				DeviceResetSemaphore = OUTOFBOX_RESET;
+			}
+
+
+#else
 			if ((CurrFragObj.buffer[INDX_ATTR] == RESTART) || ((CurrFragObj.buffindx) == INDX_ATTR))
 			{
 				MessageObjectRAM.bCommParamChange = TRUE;
@@ -285,6 +303,8 @@ void IdentityObject ()
 				InitFactoryDefaults ();
 				MessageObjectRAM.bCommParamChange = TRUE;
 			}
+
+#endif
 
 			else
 				MessageObjectFormatErrorMessage (INVALID_PARAMETER, ADD_CODE_NOT_SPECIFIED);
