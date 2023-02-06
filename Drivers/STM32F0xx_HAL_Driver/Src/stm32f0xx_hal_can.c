@@ -6,6 +6,7 @@
   *          This file provides firmware functions to manage the following
   *          functionalities of the Controller Area Network (CAN) peripheral:
   *           + Initialization and de-initialization functions
+  *
   *           + Configuration functions
   *           + Control functions
   *           + Interrupts management

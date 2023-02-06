@@ -53,9 +53,11 @@
 #include "dn_init.h"
 #include "xdatacpy.h"
 #include "dn_tmobj.h"
+#include "EE_Adr.h"  //Rick_TEST Bug47
 
 #include "gpio.h"
 #include "serial_config.h"
+
 
 // uncomment to allow the connection sizes to be changed.
 //#define NewConnectionAllocationMethod
@@ -115,6 +117,9 @@ unsigned char g_addCode = 0xff;
 extern unsigned char P_OutMsgBufferSize;
 extern unsigned char C_OutMsgBufferSize;
 // End Wrc
+
+
+extern unsigned char ProduceAssyNum,ConsumeAssyNum;//Rick_TEST Bug47jtm 9-18-13
 
 #ifdef Rick_TEST
 unsigned char TestBuf[100] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,\
@@ -592,6 +597,60 @@ void AppObjectFillConsPathLen (uchar cnxn)
 	CurrFragObj.buffer[3] = 0;
 }
 
+#ifdef Rick_TEST
+
+//**********************************************************************
+// Function		AppObjectFillProdPath()
+//
+// Edit History
+//	[0]	15Jul99	dsw	Created
+//
+//             Copyright (c) 1999 Allen-Bradley Co.
+//**********************************************************************
+//Rick_TEST Bug47  Added from Legacy Code.
+void AppObjectFillProdPath(uchar cnxn)
+{
+  //	if(ProduceAssyNum == 0)
+  ProduceAssyNum = EEPROMObjectRead(EE_Produce_Path_Id);
+  cnxn=cnxn;
+
+
+  CurrFragObj.buffer[2] = 0x20;
+  CurrFragObj.buffer[3] = 0x4;
+  CurrFragObj.buffer[4] = 0x24;
+  CurrFragObj.buffer[5] = ProduceAssyNum;//jtm 9-18-13
+  CurrFragObj.buffer[6] = 0x30;
+  CurrFragObj.buffer[7] = 0x3;
+  CurrFragObj.numbytes = 8;
+}
+
+//**********************************************************************
+// Function		AppObjectFillConsPath()
+//
+// Edit History
+//	[0]	15Jul99	dsw	Created
+//
+//             Copyright (c) 1999 Allen-Bradley Co.
+//**********************************************************************
+//Rick_TEST Bug47  Added from Legacy Code.
+
+void AppObjectFillConsPath(uchar cnxn)
+{
+  // if(ConsumeAssyNum == 0)
+  ConsumeAssyNum = EEPROMObjectRead(EE_Consume_Path_Id);
+  cnxn=cnxn;
+  CurrFragObj.buffer[2] = 0x20;
+  CurrFragObj.buffer[3] = 0x4;
+  CurrFragObj.buffer[4] = 0x24;
+  CurrFragObj.buffer[5] = ConsumeAssyNum;//jtm 9-18-13
+  CurrFragObj.buffer[6] = 0x30;
+  CurrFragObj.buffer[7] = 0x3;
+  CurrFragObj.numbytes = 8;
+}
+
+#else
+
+
 //**********************************************************************
 // Function		AppObjectFillProdPath()
 //
@@ -633,6 +692,8 @@ void AppObjectFillConsPath (uchar cnxn)
 	CurrFragObj.buffer[7] = 0x3;
 	CurrFragObj.numbytes  = 8;
 }
+
+#endif
 
 //**********************************************************************
 // Function		AppObjectGMMConfigSet()

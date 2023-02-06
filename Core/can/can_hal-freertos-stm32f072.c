@@ -92,8 +92,10 @@ CH_Error_t CH_Init (void)
 	hcan1.Init.Prescaler	 = can1_prescaler; // set by baud function
 	hcan1.Init.Mode			 = CAN_MODE_NORMAL;
 	hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-	hcan1.Init.TimeSeg1		 = CAN_BS1_4TQ;
-	hcan1.Init.TimeSeg2		 = CAN_BS2_3TQ;
+//	hcan1.Init.TimeSeg1		 = CAN_BS1_4TQ;
+//	hcan1.Init.TimeSeg2		 = CAN_BS2_3TQ;
+	hcan1.Init.TimeSeg1		 = CAN_BS1_6TQ;    //   Rick_TEST 1/4/23  see 1734ASC redesign V8 Patch information
+	hcan1.Init.TimeSeg2		 = CAN_BS2_1TQ;
 	// Defaults
 	hcan1.Init.TimeTriggeredMode	= DISABLE; // Not used
 	hcan1.Init.AutoBusOff			= DISABLE; // Disable auto recovery from busoff (we manage in software)

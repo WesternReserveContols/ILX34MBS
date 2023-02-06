@@ -176,7 +176,7 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef Rick_TEST
+#ifdef Rick_TEST_NO
 	if(1)  // Forced to read pins and write to Flash
 #else
 	if (!Module_ID_Initialized ())
