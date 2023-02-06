@@ -546,6 +546,8 @@ void MessageObjectSendPollMessage (void)
 #ifdef FPL
 	if (IOCnxnSize[CSI_P_PROD] > 8) // are we sending fragmented data
 	{
+
+
 		// build first fragment
 		// MOdified to allow variable poll sizes
 		CANMessageObject[XMIT_POLL_MESSAGE_OBJECT].DB0 = // FIRST_FRAG
@@ -2252,6 +2254,8 @@ void MessageObjectHandleRxPoll (void)
 				   P_InMsgBuffer[ConsFragPtr++] = *(moptr++);
 
 			   */
+
+
 				xdata_memcpy (P_InMsgBuffer, &CANMessageObject[RCV_POLL_MESSAGE_OBJECT].DB0,
 							  ConsFragPtr = ubStatus_size);
 

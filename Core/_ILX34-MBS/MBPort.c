@@ -41,7 +41,7 @@
 #define DNO_RESERVED    1
 #define DNO_TX_ID       2
 #define DNO_STATION_ID  3
-#define DNO_FUNC_   4
+#define DNO_FUNC_       4
 #define DNO_ADDR_L      5
 #define DNO_ADDR_H      6
 #define DNO_QUANT_L     7  // same as count lo in spec
@@ -50,20 +50,20 @@
 #define DNO_DATA_STRT  10
 
 // Device Net Input (DNI) Assembly defines for location of fields
+//  Rick_Test 12/20/22 copied this table of defines from Legacy module to here.
 #define DNI_FAULT_STRT  0
 #define DNI_MOD_STATUS  0
-#define DNI_ERROR_  	1
+#define DNI_ERROR_CODE  1
 #define DNI_RX_ID       2
 #define DNI_STATION_ID  3
-#define DNI_FUNC_   	4
+#define DNI_FUNC_CODE   4
 #define DNI_ADDR_L      5
 #define DNI_ADDR_H      6
 #define DNI_QUANT_L     7  // same as count lo in spec
 #define DNI_QUANT_H     8  // same as count hi in spec
 #define DNI_BYTE_COUNT  9
-#define DNI_DATA_STRT  	10
-#define DNI_ERROR_CODE  11
-#define DNI_FUNC_CODE 	12
+#define DNI_DATA_STRT  10
+
 
 // 9/11/2013 DRC - Added defines for MB Messages recieved in ilx slave mode
 // these represent the location of information from the beginning, 0th location
@@ -124,7 +124,10 @@ unsigned char MaxRxSize = 120;  // Max N bytes of data in Assy
                                  // 10/24/2013 DRC - This now also means Max Byte Count (2*max Int data size of an assembly)
 unsigned char MaxRxBufSize = 0;
 unsigned char FragMsg=FALSE; //Jignesh TODO
-unsigned char input_txid;
+
+static unsigned char input_txid;  // Rick_TEST changed to Static
+
+
 unsigned char xmitDataLen;
 
 unsigned char transaction_id =0;
@@ -266,6 +269,8 @@ void InitSerialIO(void)
    /* set for 1 sec */
    mb_timeoutcounter = ModbusConfig.timeout;
    mb_messagesent = 0;
+   transaction_id =0;  //Rick_TEST added Bug43
+
 
 
    Ascii.DataBits = MBport_DataParity[Ascii.Framing].DataBits;
@@ -293,7 +298,6 @@ void InitSerialIO(void)
    }
    // end of calculating MaxRxBufSize
    if(ModAttrib.Mode == RTU_MODE) InitRtuTimeout();
-   MB_Status = READY_FOR_COMMAND;
    MB_Exception = 0;
 	//
 	// rs485 TX/RX to receive
@@ -302,8 +306,9 @@ void InitSerialIO(void)
 	// Init our hardware.
 	SH_Set_Parameters ();
 	SH_Init ();
+	MB_Status = READY_FOR_COMMAND;  // Rick_TEST Moved here from line 301 to eliminate initialzing in status= 2 when irq is enabled.
 
-	TriggerCOS(); //Bug5  TODO Jignesh to avoid zero to PLC data
+//Rick_TEST Bug27 this send a explicit produce before connection is made probabley bad	TriggerCOS(); //Bug5  TODO Jignesh to avoid zero to PLC data
 }
 
 /**
@@ -1201,7 +1206,7 @@ void MB_Rtu_TimedOut(void) //interrupt 1  // using 2
    else { // Slave Mode
       MB_Status = PROCESSING_COMMAND;
    }
-   TriggerCOS();   //Bug5 TODO Jignesh to avoid zero to PLC data
+   // TriggerCOS();   //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
    ProcessMbMessage=1;  //process the message
 }
 
@@ -1432,8 +1437,8 @@ void Serial_RX_ISR(void)
                   MB_Status = PROCESSING_COMMAND;
                }
                ProcessMbMessage=1;
-               //Jignesh RI=0;
-               TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
+               //Jignesh RI=0;  new_produce_data_avail = 1;
+                TriggerCOS();  //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
                return;
             }
             else
@@ -1511,7 +1516,7 @@ void Serial_RX_ISR(void)
         MB_Status = PROCESSING_COMMAND;
      }
      ProcessMbMessage=1;
-     TriggerCOS();  //Bug5 TODO Jignesh to avoid zero to PLC data
+     TriggerCOS();  //Rick_TEST Bug5 TODO Jignesh to avoid zero to PLC data
    }
    //Jignesh RI=0;
 }
@@ -1562,7 +1567,7 @@ int MBLoad(unsigned char  *src)
    }
    else    // MB_SLAVEMODE
    {
-      if (!(src[1] & 0x80)) { // do not do anything if this is an exception message
+      if (!(src[1] & 0x80)) { // do not do anything if this is an exception message,  func code + 0x80 is and exception
 
          if (ComputeSlaveResponseLength(src,&srclen))
          {
@@ -1640,10 +1645,14 @@ int MBLoad(unsigned char  *src)
          for( indx = 0; indx < srclen; indx++ )
          {
             byte =(*(src++));
-            if (0)//Jignesh ((ModbusConfig.type == MB_SLAVEMODE) && (function_ > 0) && (function_ < 5) && (indx > 1) && (indx < 6))
-			{
-               continue;
-            }
+        //    if (0)//Jignesh ((ModbusConfig.type == MB_SLAVEMODE) && (function_ > 0) && (function_ < 5) && (indx > 1) && (indx < 6))
+		//	{
+        //       continue;
+        //    }   Rick_TEST 12/20/2022
+            if ((ModbusConfig.type == MB_SLAVEMODE) && (function_code > 0) && (function_code < 5) && (indx > 1) && (indx < 6))
+            {
+            	continue;
+         	}
             else
             {
                crc = UpdateCRC(byte,crc);
@@ -1738,6 +1747,17 @@ void WriteExceptionToQue(void)
  */
 void MBM_QueMbTxMsg(unsigned char  *P_InBuf)
 {
+// Rick_Test 12/20/2022
+	static char FirstPass = 0;
+
+	if(!FirstPass)
+	{
+		FirstPass++;
+		transaction_id = P_InBuf[DNO_TX_ID];
+		return;
+	}
+
+
 	 if(P_InBuf[MBM_CMDS] == 0xFF) goto TESTSKIP;
    //  Processing for ILX Command Byte   // ILX-13
    if(P_InBuf[MBM_CMDS] & MBM_CMDS_BOOT)   //Perform Cold Boot
@@ -1790,9 +1810,10 @@ TESTSKIP:
       else { // MB_SLAVEMODE
          MB_Status = PROCESSING_RESPONSE;
       }
-      TriggerCOS(); //Bug5 TODO Jignesh to avoid zerto PLC
+      TriggerCOS(); //Bug5 Bug30 TODO Jignesh to avoid zerto PLC
       // reset MB_Exception to 0 every time a message comes in from DN
       MB_Exception = 0;
+
 
       if ( MBLoad( &P_InBuf[DNO_STATION_ID] ) ) //load the modbus buffer system, verify the buffer
       {
@@ -2939,6 +2960,7 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
    int i,bufcount;
    BYTE errorcode =0;
    unsigned char idx,cnt;
+   static unsigned char RxID_S;     // Rick_TEST this is a trial values used below.
 
    error = error;
    // received a message ok
@@ -2958,6 +2980,11 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
         case 3:
         case 4:
         idx = 0;
+#ifdef Rick_TEST
+        if(MB_Status!=1)
+        	MB_Status = 1;
+#endif
+
         mainloopassydata[idx++] = MB_Status;
         mainloopassydata[idx++] = errorcode;
         if ( ( !error ) || ( error == FLOAT_WORD_SWAP_UNEVEN_WORD_COUNT_ERROR) ) {
@@ -3047,12 +3074,14 @@ unsigned char MB_LoadProduceBuffer(unsigned char error)
          if ( ++input_txid == 0 ) ++input_txid;
       }
 
-      mainloopassydata[DNI_RX_ID] = input_txid;
+      mainloopassydata[DNI_RX_ID] = ++RxID_S;
+      //  Rick_TEST try incrementing RXIDmainloopassydata[DNI_RX_ID] = input_txid;
       if ( mb_normalized_rcv_buffer_len > MB_STATION_ID ) {
          mainloopassydata[DNI_STATION_ID] =  mb_normalized_rcv_buffer[MB_STATION_ID];
       }
       if ( mb_normalized_rcv_buffer_len > MB_FUNC_LOC ) {
          mainloopassydata[DNI_FUNC_CODE] =  mb_normalized_rcv_buffer[MB_FUNC_LOC];
+         // Rick_TEST This looks out of place  mainloopassydata[DNI_FUNC_CODE] =  mb_normalized_rcv_buffer[MB_FUNC_LOC];
       }
       // Note that address bytes in mb_normalized_rcv_buffer were swapped
       // above so that the normal place holder for the MBC_ADDR_HI_LOC has

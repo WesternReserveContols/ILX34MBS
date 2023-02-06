@@ -17,6 +17,7 @@ uchar		 AppObjectInitialized;
 BOOL		 AppObjectCOS_Bit;
 BOOL		 COSACKRcvd;
 extern uchar GMMNewMACID;
+char	isSoftReset;    // Rick_TEST Bug47
 
 static void COS_Code (void);
 
@@ -64,11 +65,13 @@ SOFT_RESET:
 	*/
 
 	INT_DISABLE;
+	HAL_Delay (100);  // Rick_TEST  Bug47
 
 	/*
-	// Initialize the Microprocessor
+	// Initialize the Microprocessor; Timer and CAN Hardware.
 	*/
 	InitC505 ();
+	// HAL_Delay (250);  // Rick_TEST  Bug47
 
 	IO_SET_EnLineOut (0); // write a zero before one to force hard pull-up
 	IO_SET_EnLineOut (1); // prevent neighbor from dupmaccing
@@ -92,6 +95,9 @@ SOFT_RESET:
 	*/
 	UIObjectInit ();
 	AppObjectInitAppLEDs (); // how many app leds does the product have
+
+
+
 
 	MessageObjectRAM.bCommParamChange = FALSE;
 	EnableLineObjectInit ();
@@ -122,18 +128,6 @@ SOFT_RESET:
 
 	KICK_WDOG ();
 
-
-
-
-#ifdef SIM_CONSUME
-
-	/*
-	// Initialize application objects
-	// Put before DUPMAC to allow offline debugging.
-	*/
-	InitApplicationObjects ();
-	AppObjectInitialized = TRUE;
-#endif
 
 	// wait in while loop to autobaud and for EnableIn to be enabled
 	while (ABAUD_ENABLED == DeviceNetObjectRAM.bAutoBaud
@@ -214,6 +208,7 @@ GMM_RESTART:
 
 		if(SoftReset == SOFT_RESET_ACTIVE)
 		{
+			isSoftReset = 1;  //Rick_TEST Bug47
 			SoftReset = 0;
 			STARTUP1();  //Rick_TEST Bug9    goto SOFT_RESET;
 		}

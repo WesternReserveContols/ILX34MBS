@@ -212,12 +212,12 @@ void DeviceNetObjectSetInstanceAttr ()
 	*/
 	case DEVICENETOBJ_BAUDRATE:
 
-		if (EEPROMObjectRead (EE_AutoBaud))
-		{
+	//	Rick_TEST bug39 if (EEPROMObjectRead (EE_AutoBaud))
+	//	{
 			// autobaud is set - don't allow buadrate set
-			MessageObjectFormatErrorMessage (ATTR_NOT_SETTABLE, ADD_CODE_NOT_SPECIFIED);
-		}
-		else if (CurrFragObj.buffer[INDX_DATA] <= (unsigned char)MAXBAUDRATE)
+	//		MessageObjectFormatErrorMessage (ATTR_NOT_SETTABLE, ADD_CODE_NOT_SPECIFIED);
+	//	}
+		if (CurrFragObj.buffer[INDX_DATA] <= (unsigned char)MAXBAUDRATE)
 		{
 			DeviceNetObjectRAM.baudrate = CurrFragObj.buffer[INDX_DATA];
 

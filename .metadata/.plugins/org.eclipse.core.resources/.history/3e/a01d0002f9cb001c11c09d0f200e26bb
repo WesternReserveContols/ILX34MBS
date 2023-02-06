@@ -1,2 +1,0 @@
-../Core/Src/iwdg.c:8:6:MX_IWDG_Init	16	static
-../Core/Src/iwdg.c:23:6:IWDT_Write	8	static

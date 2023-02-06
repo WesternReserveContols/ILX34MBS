@@ -53,9 +53,11 @@
 #include "dn_init.h"
 #include "xdatacpy.h"
 #include "dn_tmobj.h"
+#include "EE_Adr.h"  //Rick_TEST Bug47
 
 #include "gpio.h"
 #include "serial_config.h"
+
 
 // uncomment to allow the connection sizes to be changed.
 //#define NewConnectionAllocationMethod
@@ -115,6 +117,14 @@ unsigned char g_addCode = 0xff;
 extern unsigned char P_OutMsgBufferSize;
 extern unsigned char C_OutMsgBufferSize;
 // End Wrc
+
+
+extern unsigned char ProduceAssyNum,ConsumeAssyNum;//Rick_TEST Bug47jtm 9-18-13
+
+#ifdef Rick_TEST
+unsigned char TestBuf[100] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,\
+                              21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37};
+#endif
 
 //**********************************************************************
 // Function    AppObjectInitAppLEDs()
@@ -209,26 +219,20 @@ void		  TriggerCOS (void)
 
 void AppObjectMonitorIO (void) //?
 {
-
 	TimerObjectSvcTimer ();
 
-//	SHWMain ();
-
-//	TimerObjectSvcTimer ();
-
-//	RRecMain ();
-
-//	TimerObjectSvcTimer ();
-
-	// assy main proc
+	// Process Produce Assy
 	if (new_produce_data_avail)
 	{ // scope
 		MSG msg;
 		new_produce_data_avail = 0;
 		assymainprocnotbusy	   = 0;
 		msg.buf				   = mainloopassydata;
-		AssyPFunc (&msg);
+		msg.buflen = CompAssyPSize ();    // Rick_TEST fix bug 19  msg. buffer set to 177 bytes by default, now set to P_ASSY_SIZE
+
+		//AssyPFunc (&msg);   // Rick_TEST Removed was leftover from 1734ASC
 		size_of_mainloopassydata = msg.buflen;
+		// Set Semaphore to send datat via CAN
 		polldatachanged			 = 1;
 		cosdatachanged			 = 1;
 		// Trigger the COS
@@ -333,19 +337,13 @@ void AppObjectFillPollData (void)
 	//
 	if (polldatachanged && assymainprocnotbusy)
 	{
-		/*
-		unsigned char * src=mainloopassydata;
-		unsigned char * dest=P_OutMsgBuffer;
-		unsigned char len=P_OutMsgBufferSize=size_of_mainloopassydata;
-		while(len--) *(dest++)=*(src++);
-		*/
-		mainloopassydata[0]=MB_Status;
-		// copy it
+
+		mainloopassydata[0]=MB_Status;  // Rick_TEST This looks super redundant.
 		xdata_memcpy (P_OutMsgBuffer, mainloopassydata, P_OutMsgBufferSize = size_of_mainloopassydata);
 		polldatachanged = 0;
 	}
 	// stuff the buffer if anything needs to be done here
-	P_OutMsgBuffer[0] = MB_Status;    // Rick_TEST Addes these two lines from Legacy code 9/2/2022
+	P_OutMsgBuffer[0] = MB_Status;    // Rick_TEST Added these two lines from Legacy code 9/2/2022
 	P_OutMsgBuffer[1] = MB_Exception;
 
 }
@@ -526,13 +524,7 @@ void AppAssemblyObject (void)
 	// To suppress the overlapping memory region warning we will use a loop
 	for (int i = 0; i < msg.buflen; i++)
 		CurrFragObj.buffer[2 + i] = msg.buf[i];
-	/*
-	{//scope
-	unsigned char * dest=&CurrFragObj.buffer[2];
-	while(msg.buflen--)
-		*(dest++)=*(msg.buf++);
-	}
-	*/
+
 }
 
 //**********************************************************************
@@ -605,6 +597,60 @@ void AppObjectFillConsPathLen (uchar cnxn)
 	CurrFragObj.buffer[3] = 0;
 }
 
+#ifdef Rick_TEST
+
+//**********************************************************************
+// Function		AppObjectFillProdPath()
+//
+// Edit History
+//	[0]	15Jul99	dsw	Created
+//
+//             Copyright (c) 1999 Allen-Bradley Co.
+//**********************************************************************
+//Rick_TEST Bug47  Added from Legacy Code.
+void AppObjectFillProdPath(uchar cnxn)
+{
+  //	if(ProduceAssyNum == 0)
+  ProduceAssyNum = EEPROMObjectRead(EE_Produce_Path_Id);
+  cnxn=cnxn;
+
+
+  CurrFragObj.buffer[2] = 0x20;
+  CurrFragObj.buffer[3] = 0x4;
+  CurrFragObj.buffer[4] = 0x24;
+  CurrFragObj.buffer[5] = ProduceAssyNum;//jtm 9-18-13
+  CurrFragObj.buffer[6] = 0x30;
+  CurrFragObj.buffer[7] = 0x3;
+  CurrFragObj.numbytes = 8;
+}
+
+//**********************************************************************
+// Function		AppObjectFillConsPath()
+//
+// Edit History
+//	[0]	15Jul99	dsw	Created
+//
+//             Copyright (c) 1999 Allen-Bradley Co.
+//**********************************************************************
+//Rick_TEST Bug47  Added from Legacy Code.
+
+void AppObjectFillConsPath(uchar cnxn)
+{
+  // if(ConsumeAssyNum == 0)
+  ConsumeAssyNum = EEPROMObjectRead(EE_Consume_Path_Id);
+  cnxn=cnxn;
+  CurrFragObj.buffer[2] = 0x20;
+  CurrFragObj.buffer[3] = 0x4;
+  CurrFragObj.buffer[4] = 0x24;
+  CurrFragObj.buffer[5] = ConsumeAssyNum;//jtm 9-18-13
+  CurrFragObj.buffer[6] = 0x30;
+  CurrFragObj.buffer[7] = 0x3;
+  CurrFragObj.numbytes = 8;
+}
+
+#else
+
+
 //**********************************************************************
 // Function		AppObjectFillProdPath()
 //
@@ -646,6 +692,8 @@ void AppObjectFillConsPath (uchar cnxn)
 	CurrFragObj.buffer[7] = 0x3;
 	CurrFragObj.numbytes  = 8;
 }
+
+#endif
 
 //**********************************************************************
 // Function		AppObjectGMMConfigSet()

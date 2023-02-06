@@ -1,4 +1,0 @@
-../Core/dn_tmobj.c:49:6:TimerObjectRoundUp	32	static
-../Core/dn_tmobj.c:108:6:TimerObjectISR	8	static
-../Core/dn_tmobj.c:151:15:TimerObjectSvcTimer	8	static
-../Core/dn_tmobj.c:268:6:TimerObjectInit	8	static

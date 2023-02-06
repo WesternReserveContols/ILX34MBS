@@ -1,4 +1,0 @@
-Core/can/can_fifo.o: ../Core/can/can_fifo.c ../Core/can/can_fifo.h \
- ../Core/can/can_hal.h
-../Core/can/can_fifo.h:
-../Core/can/can_hal.h:

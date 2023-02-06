@@ -1,2 +1,0 @@
-../Core/context/thread_parent.c:17:6:Thread_Parent	24	static
-../Core/context/thread_parent.c:33:6:yield_thread	8	static

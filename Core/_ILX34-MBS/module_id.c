@@ -137,6 +137,22 @@ static void Module_ID_Write_Flash (Module_Type type)
 {
 	assert_permitted_runtime_module_type (type, "attempted to write invalid module id to flash");
 
+	/* manually reset module ID for testing */
+
+	// Rick_TEST 9/2/2022  used for enable writing to flash for writing.
+	HAL_FLASH_Unlock ();
+	FLASH_EraseInitTypeDef erase;
+	erase.NbPages	  = 1;
+	erase.PageAddress = 0x801F800;
+	erase.TypeErase	  = FLASH_TYPEERASE_PAGES;
+
+	uint32_t PageError = 0;
+	HAL_FLASHEx_Erase (&erase, &PageError);
+	HAL_FLASH_Lock ();
+
+
+
+
 	HAL_FLASH_Unlock ();
 	HAL_FLASH_Program (FLASH_TYPEPROGRAM_WORD, MODULE_ID_FLASH_ADDRESS, (uint32_t)type);
 	HAL_FLASH_Lock ();
@@ -160,27 +176,7 @@ static void Module_ID_Set_Global_Variables (Module_Type type);
 void Module_ID_Init ()
 {
 
-#ifdef Rick_TEST_MOD_ID
-
-/*  // Load Module_ID direct  Rick_TEST
-	Module_Type type = MODULE_TYPE_ILX34_MBS485;
-	Module_ID_Set_Global_Variables (type);
-*/
-
-
-	/* manually reset module ID for testing */
-
-		// Rick_TEST 9/2/2022  used for enable writing to flash for writing.
-		HAL_FLASH_Unlock ();
-		FLASH_EraseInitTypeDef erase;
-		erase.NbPages	  = 1;
-		erase.PageAddress = 0x801F800;
-		erase.TypeErase	  = FLASH_TYPEERASE_PAGES;
-
-		uint32_t PageError = 0;
-		HAL_FLASHEx_Erase (&erase, &PageError);
-		HAL_FLASH_Lock ();
-
+#ifdef Rick_TEST_NO
 	if(1)  // Forced to read pins and write to Flash
 #else
 	if (!Module_ID_Initialized ())
@@ -211,14 +207,14 @@ const unsigned char id_ILX_232_name_mem[] = "\x0C""ILX34-MBS232";
 const unsigned int	id_ILX_232_product_type_mem   = 12;
 const unsigned int	id_ILX_232_product_code_mem   = 4001;
 const unsigned char id_ILX_232_major_revision_mem = 1;
-const unsigned char id_ILX_232_minor_revision_mem = 15;
+const unsigned char id_ILX_232_minor_revision_mem = 16;
 const unsigned int	id_ILX_232_vendor_id_mem	   = 309;
 
 const unsigned char id_ILX_485_name_mem[] = "\x0C""ILX34-MBS485";
 const unsigned int	id_ILX_485_product_type_mem   = 12;
 const unsigned int	id_ILX_485_product_code_mem   = 4002;
 const unsigned char id_ILX_485_major_revision_mem = 1;
-const unsigned char id_ILX_485_minor_revision_mem = 15;
+const unsigned char id_ILX_485_minor_revision_mem = 16;
 const unsigned int	id_ILX_485_vendor_id_mem	   = 309;
 /*
 	Sets 1734 applications module ID variables

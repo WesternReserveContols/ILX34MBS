@@ -58,3 +58,4 @@ extern unsigned char cpValueLow;
 #define DEVICE_MAJOR_FAULT_B2 0x08
 #define RESTART				  0x00
 #define OUTOFBOX_RESET		  0x01
+#define COLD_BOOT			  0x02      // Rick_TEST

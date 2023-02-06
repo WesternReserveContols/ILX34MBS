@@ -1,5 +1,0 @@
-../Core/dn_ahobj.c:27:6:AckHandlerObjectInit	8	static
-../Core/dn_ahobj.c:62:6:AckHandlerObjectDecrementTime	8	static
-../Core/dn_ahobj.c:120:6:AckHandlerObjectSetInstanceAttr	8	static
-../Core/dn_ahobj.c:181:6:AckHandlerObjectGetInstanceAttr	8	static
-../Core/dn_ahobj.c:233:6:AckHandlerObject	8	static

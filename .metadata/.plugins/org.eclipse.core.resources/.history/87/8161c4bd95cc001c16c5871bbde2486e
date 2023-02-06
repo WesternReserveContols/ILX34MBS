@@ -1,8 +1,0 @@
-../Core/dn_uiobj.c:36:6:UIObjectLedDrive	16	static
-../Core/dn_uiobj.c:75:6:UIObjectInit	8	static
-../Core/dn_uiobj.c:130:15:UIObjectLEDPowerupDone	8	static
-../Core/dn_uiobj.c:157:6:UIObjectNetLEDOnceRedGreen	8	static
-../Core/dn_uiobj.c:209:6:UIObjectLEDUpdate	8	static
-../Core/dn_uiobj.c:389:6:UIObjectLEDRefresh	8	static
-../Core/dn_uiobj.c:410:6:UIObjectClearLEDs	8	static
-../Core/dn_uiobj.c:439:15:UIObjectLEDFlashTimer	8	static

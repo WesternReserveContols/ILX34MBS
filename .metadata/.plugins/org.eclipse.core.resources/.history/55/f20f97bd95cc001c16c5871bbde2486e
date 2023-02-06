@@ -1,7 +1,0 @@
-Core/can/can_message.o: ../Core/can/can_message.c ../Core/can/can.h \
- ../Core/can/can_hal.h ../Core/can/can_peripheral.h \
- ../Core/can/can_message.h
-../Core/can/can.h:
-../Core/can/can_hal.h:
-../Core/can/can_peripheral.h:
-../Core/can/can_message.h:
