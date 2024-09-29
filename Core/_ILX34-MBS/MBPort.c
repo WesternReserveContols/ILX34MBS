@@ -1611,7 +1611,7 @@ int MBLoad(unsigned char  *src)
             // if statement skip pad bytes
             // in functions 1-4 in MB_SLAVEMODE
 
-            if (0) //Jignesh ((ModbusConfig.type == MB_SLAVEMODE) && (function_ > 0) && (function_ < 5) && (indx > 1) && (indx < 6))
+            if ((ModbusConfig.type == MB_SLAVEMODE) && (function_code > 0) && (function_code < 5) && (indx > 1) && (indx < 6))
 			{
                continue;
             }
@@ -1640,7 +1640,7 @@ int MBLoad(unsigned char  *src)
          for( indx = 0; indx < srclen; indx++ )
          {
             byte =(*(src++));
-            if (0)//Jignesh ((ModbusConfig.type == MB_SLAVEMODE) && (function_ > 0) && (function_ < 5) && (indx > 1) && (indx < 6))
+            if ((ModbusConfig.type == MB_SLAVEMODE) && (function_code > 0) && (function_code < 5) && (indx > 1) && (indx < 6))
 			{
                continue;
             }
@@ -2871,7 +2871,7 @@ void main_port_serial (void)
  *
  * @param unsigned char * 							- Pointer to buf of MODBUS Message
  * @param unsigned char 							- Length of modbus message
- * @return unsigned char 							- TRUE or FALSE based on error.
+ * @return unsighned char 							- TRUE or FALSE based on error.
  *
  */
 unsigned char Check_For_Valid_MB_Msg(unsigned char *buf, unsigned char len)
