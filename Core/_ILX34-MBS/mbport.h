@@ -172,7 +172,6 @@ extern ASCIISTRUCT Ascii_attrib;
 bool           MB_Sys_Busy(void);
 unsigned char MB_Sys_err(void);	
 void          StartMbSend(void);
-//bool           MBLoad(unsigned char xdata *src); //AP
 int           MBLoad(unsigned char *src);
 unsigned char ComputeIOConsumeSize(void);
 unsigned char ComputeIOProduceSize(void);

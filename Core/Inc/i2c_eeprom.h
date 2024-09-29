@@ -8,6 +8,8 @@
 #ifndef I2C_EEPROM_H
 #define I2C_EEPROM_H
 
+#include <stdint.h>
+
 typedef enum
 {
 	EE_SUCCESS = 0U,
